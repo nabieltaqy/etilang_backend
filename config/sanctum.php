@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => 720, //set time for token expiration
 
     /*
     |--------------------------------------------------------------------------

@@ -25,10 +25,15 @@ class AuthController extends Controller
             ]);
         }
      
+        //delete all existing user token
+        $user->tokens()->delete();
+
         //return token for user || need argument for token name
         return response()->json(
             [
-            'token' => $user->createToken($request->email)->plainTextToken
+                'message' => 'Login Succesful',
+                'user' => $user,
+                'token' => $user->createToken($request->email)->plainTextToken
             ]
         );
     }
@@ -44,7 +49,7 @@ class AuthController extends Controller
         
         return response()->json(
             [
-                'message' => 'Token deleted successfully'
+                'message' => 'Logout Succesful',
             ]
         );
     }
