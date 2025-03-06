@@ -12,7 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        //middleware aliases
+        $middleware->alias([
+            'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
+            'ensure2FA' => App\Http\Middleware\ensure2FA::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

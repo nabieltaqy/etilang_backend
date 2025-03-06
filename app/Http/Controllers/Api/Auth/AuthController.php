@@ -31,9 +31,9 @@ class AuthController extends Controller
         //return token for user || need argument for token name
         return response()->json(
             [
-                'message' => 'Login Succesful',
+                'message' => 'Enter OTP for 2FA',
                 'user' => $user,
-                'token' => $user->createToken($request->email)->plainTextToken
+                'token' => $user->createToken('temp_token')->plainTextToken
             ]
         );
     }
