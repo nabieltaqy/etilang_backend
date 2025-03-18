@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class userSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,12 +21,16 @@ class userSeeder extends Seeder
                 'nip' => '1234567890',
                 'email' => 'test@example.com',
                 'password' => Hash::make('12345678'),
+                'role' => 'polisi',
+                'google2fa_secret' => 'TPRZ44EKM4KVIRAR',
             ],
             [
                 'name' => 'Test Admin',
                 'nip' => '1234567891',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('12345678'),
+                'role' => 'admin',
+                'google2fa_secret' => 'TPRZ44EKM4KVIRAR',
             ],
         ];
 

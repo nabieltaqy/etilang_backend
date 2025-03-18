@@ -32,7 +32,7 @@ class AuthController extends Controller
         return response()->json(
             [
                 'message' => 'Enter OTP for 2FA',
-                'user' => $user,
+                // 'user' => $user,
                 'token' => $user->createToken('temp_token')->plainTextToken
             ]
         );

@@ -9,10 +9,12 @@
         "php": "^8.2",
         "bacon/bacon-qr-code": "^3.0",
         "endroid/qr-code": "^6.0",
+        "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
-        "pragmarx/google2fa-laravel": "^2.3"
+        "pragmarx/google2fa-laravel": "^2.3",
+        "twilio/sdk": "^8.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

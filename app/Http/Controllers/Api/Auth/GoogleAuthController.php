@@ -38,6 +38,10 @@ class GoogleAuthController extends Controller
         // Convert to base64 to display in the view
         // $qrCodeImageBase64 = base64_encode($qrCodeImage->getString());
 
+        // is 2fa enabled
+        $user->is_2fa_enabled = true;
+        $user->save();
+
         // return image png
         return new Response($result->getString(), 200, ['Content-Type' => 'image/png']);
 
@@ -67,7 +71,8 @@ class GoogleAuthController extends Controller
             $user->save();
             return response()->json([
                 '2fa_verified' => true,
-                'message' => '2fa enabled',
+                // 'message' => '2fa enabled',
+                // 'user' => $user,
                 'token' => $token,
             ], 200);
         }
