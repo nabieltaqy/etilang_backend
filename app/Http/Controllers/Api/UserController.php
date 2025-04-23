@@ -44,7 +44,11 @@ class UserController extends Controller
 
         $user = User::create($request->all());
 
-        return new UserResource($user);
+        // return new UserResource($user);
+        return response()->json([
+            'message' => 'User created successfully',
+            'user' => new UserResource($user)
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -59,7 +63,11 @@ class UserController extends Controller
         $user = User::find($id);
         $user->update($request->all());
 
-        return new UserResource($user);
+        // return new UserResource($user);
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => new UserResource($user)
+        ]);
     }
 
     public function destroy($id)

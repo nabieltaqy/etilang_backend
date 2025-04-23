@@ -21,8 +21,20 @@ class Violation extends Model
         });
     }
 
-    public function user()
+    public function ticket()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(Ticket::class);
+    }
+
+    public function violationTypes()
+    {
+        return $this->belongsTo(ViolationType::class);
+    }
+
+
+
+    public function camera()
+    {
+        return $this->belongsTo(Camera::class);
     }
 }

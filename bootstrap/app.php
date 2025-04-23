@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
             'ensure2FA' => App\Http\Middleware\ensure2FA::class,
             'ensure2FAEnabled' => App\Http\Middleware\ensure2FAEnabled::class,
+            'police' => App\Http\Middleware\PoliceMiddleware::class,
+            'admin' => App\Http\Middleware\AdminMiddleware::class,
+            'guest' => App\Http\Middleware\GuestMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

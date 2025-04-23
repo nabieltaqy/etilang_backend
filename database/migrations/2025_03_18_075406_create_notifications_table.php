@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['email', 'sms', 'whatsapp']);
-            $table->unsignedBigInteger('ticket_id');
+            $table->uuid('ticket_id');
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
             $table->timestamps();
         });

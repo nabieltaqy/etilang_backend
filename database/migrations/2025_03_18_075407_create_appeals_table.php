@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('appeals', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('ticket_id');
+            $table->uuid('ticket_id');
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
             $table->string('argument');
             $table->string('evidence');

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tickets', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('violation_id');
+            $table->uuid('id')->primary();
+            $table->uuid('violation_id');
             $table->foreign('violation_id')->references('id')->on('violations')->onDelete('cascade');
             $table->unsignedBigInteger('investigator_id')->nullable();
             $table->foreign('investigator_id')->references('id')->on('users')->onDelete('cascade');
@@ -22,6 +22,8 @@ return new class extends Migration
             $table->dateTime('deadline_confirmation');
             $table->unsignedBigInteger('hearing_schedule_id')->nullable();
             $table->foreign('hearing_schedule_id')->references('id')->on('hearing_schedules')->onDelete('cascade');
+            $table->unsignedBigInteger('vehicle_id');
+            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
             $table->timestamps();
         });
     }

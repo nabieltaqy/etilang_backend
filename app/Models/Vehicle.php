@@ -9,4 +9,9 @@ class Vehicle extends Model
     protected $table = 'vehicles';
     protected $guarded = ['id'];
 
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
 }
