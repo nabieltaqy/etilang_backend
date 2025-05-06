@@ -99,7 +99,7 @@ class ViolationController extends Controller
             Activity::create([
                 'ticket_id'   => $ticket->id,
                 'name'        => 'Tilang',
-                'description' => 'Kendaraan terdeteksi melanggar lalu lintas',
+                'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
             ]);
         }
 

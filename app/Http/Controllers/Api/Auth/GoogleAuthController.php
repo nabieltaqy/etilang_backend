@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api\auth;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Models\User;
 use Endroid\QrCode\QrCode;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GoogleAuthController extends Controller
 {
-    public function show2faRegistration(Request $request)
+    public function show2faRegistration()
     {
         $user = Auth::user();
         $google2fa = new Google2FA();

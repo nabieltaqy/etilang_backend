@@ -1,15 +1,17 @@
 <?php
 
+use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AppealController;
 use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ViolationController;
-use App\Http\Controllers\api\auth\GoogleAuthController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\Notifications\SMSController;
 use App\Http\Controllers\Api\Notifications\EmailController;
-use App\Http\Controllers\Api\Notifications\SendAllController;
 use App\Http\Controllers\Api\Notifications\WhatsappController;
 
 // use Illuminate\Http\Request;
@@ -37,11 +39,12 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
         Route::apiResource('appeals', AppealController::class)->except(['create']);
         Route::apiResource('violations', ViolationController::class)->except(['store']);
         Route::prefix('notifications')->group(function () {
-            Route::post('send-email', [EmailController::class, 'send']); //send email
-            Route::post('send-whatsapp', [WhatsappController::class, 'sendWhatsApp']); //send whatsapp
-            Route::post('send-sms', [SMSController::class, 'sendSMS']); //send SMS
-            Route::post('send-all', [SendAllController::class, 'sendAll']); //send all notifications
+            Route::post('send-email', [NotificationController::class, 'sendEmail']); //send email
+            Route::post('send-whatsapp', [NotificationController::class, 'sendWhatsApp']); //send whatsapp
+            Route::post('send-sms', [NotificationController::class, 'sendSMS']); //send SMS
+            Route::post('send-all', [NotificationController::class, 'sendAll']); //send all notifications
         });
+        Route::apiResource('tickets', TicketController::class)->except(['create']);
     });
 });
 
@@ -50,17 +53,3 @@ Route::post('detected-violation', [ViolationController::class, 'store']); //send
 
 //all user can access
 Route::post('appeals', [AppealController::class, 'store']);
-
-//route cobaan
-// Route::post('/notifications/send-all', function (Request $request) {
-
-//     $send = [
-//         'email' => $request->email,
-//         'whatsapp' => $request->to,
-//         'sms' => $request->to,
-//     ];
-//     return response()->json([
-//         'message' => 'Notifications sent successfully',
-//         'send' => $send,
-//     ]);
-// });

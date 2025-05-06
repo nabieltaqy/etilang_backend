@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Notifications;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use App\Services\FonnteService;
 use App\Services\SMS8Service;
 use App\Services\EmailService;
 
-class SendAllController extends Controller
+class NotificationController extends Controller
 {
     protected $fonnte;
     protected $sms;
@@ -46,5 +46,41 @@ class SendAllController extends Controller
                 'message' => $emailResult['status'] ?? 'failed',
             ]
         ]);
+    }
+
+    public function sendSMS(Request $request)
+    {
+        $request->validate([
+            'to' => 'required|string',
+            'message' => 'required|string',
+        ]);
+
+        $response = $this->sms->sendSMS($request->to, $request->message);
+
+        return response()->json($response);
+    }
+
+    public function sendWhatsApp(Request $request)
+    {
+        $request->validate([
+            'to' => 'required|string',
+            'message' => 'required|string',
+        ]);
+
+        $response = $this->fonnte->sendWhatsapp($request->to, $request->message);
+
+        return response()->json($response);
+    }
+
+    public function sendEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'message' => 'required|string',
+        ]);
+
+        $response = $this->email->send($request->email, $request->message);
+
+        return response()->json($response);
     }
 }
