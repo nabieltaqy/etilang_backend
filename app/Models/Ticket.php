@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Midtrans\Transaction;
 
 class Ticket extends Model
 {
@@ -51,9 +52,9 @@ class Ticket extends Model
         return $this->hasMany(Notification::class);
     }
 
-    public function fines()
+    public function transactions()
     {
-        return $this->hasMany(Fine::class);
+        return $this->hasMany(Transaction::class);
     }
 
     public function vehicle()

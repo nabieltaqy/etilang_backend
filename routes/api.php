@@ -2,7 +2,7 @@
 
 use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TicketController;
+use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AppealController;
 use App\Http\Controllers\Api\VehicleController;
@@ -10,9 +10,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ViolationController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
-use App\Http\Controllers\Api\Notifications\SMSController;
-use App\Http\Controllers\Api\Notifications\EmailController;
-use App\Http\Controllers\Api\Notifications\WhatsappController;
+use App\Http\Controllers\Api\MidtransController;
 
 // use Illuminate\Http\Request;
 
@@ -53,3 +51,7 @@ Route::post('detected-violation', [ViolationController::class, 'store']); //send
 
 //all user can access
 Route::post('appeals', [AppealController::class, 'store']);
+Route::prefix('midtrans')->group(function () {
+    Route::post('transaction', [MidtransController::class, 'createTransaction']);
+    // Route::get('callback', [MidtransController::class, 'getTransactionStatus']);
+});

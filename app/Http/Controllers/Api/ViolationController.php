@@ -60,8 +60,8 @@ class ViolationController extends Controller
         $request->validate([
             'status' => 'required|in:Terdeteksi,Tilang,Batal',
             'number' => 'required|exists:vehicles,number',
+            'violation_id' => 'required|exists:violations,id',
         ]);
-
 
         // id checking if violation id exist on tickets
         $ticket = Ticket::where('violation_id', $id)->first();
@@ -69,7 +69,7 @@ class ViolationController extends Controller
             return response()->json(['message' => 'Violation already have ticket'], 400);
         }
 
-        $violation         = Violation::find($id);
+        $violation         = Violation::find($request->violation_id);
         $violation->status = $request->status;
         $violation->save();
 

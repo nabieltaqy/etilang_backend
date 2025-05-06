@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use App\Http\Resources\TicketResource;
@@ -13,7 +14,7 @@ class TicketController extends Controller
         // Logic to retrieve and return all tickets
         $tickets = Ticket::with(['violation', 'user', 'hearingSchedule', 'vehicle', 'notifications', 'activities'])->paginate(10);
 
-        return new TicketResource($tickets);
+        return TicketResource::collection($tickets);
     }
 
     public function show($id)
