@@ -26,7 +26,7 @@ class Violation extends Model
         return $this->hasOne(Ticket::class);
     }
 
-    public function violationTypes()
+    public function violationType()
     {
         return $this->belongsTo(ViolationType::class);
     }
