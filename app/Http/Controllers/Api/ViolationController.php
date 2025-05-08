@@ -17,13 +17,13 @@ class ViolationController extends Controller
 {
     public function index()
     {
-        $violations = Violation::with(['violationTypes', 'camera', 'ticket'])->paginate(10);
+        $violations = Violation::with(['violationType', 'camera', 'ticket'])->paginate(10);
         return ViolationResource::collection($violations);
     }
 
     public function show($id)
     {
-        $violation = Violation::with(['violationTypes', 'vehicle', 'camera', 'ticket'])->find($id);
+        $violation = Violation::with(['violationType', 'camera', 'ticket'])->find($id);
         return new ViolationResource($violation);
     }
 
