@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'police' => App\Http\Middleware\PoliceMiddleware::class,
             'admin' => App\Http\Middleware\AdminMiddleware::class,
             'guest' => App\Http\Middleware\GuestMiddleware::class,
+            'validate.violation.token' => App\Http\Middleware\ValidateViolationToken::class,
+            'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
+            'check.ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

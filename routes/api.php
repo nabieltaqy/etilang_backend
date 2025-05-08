@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
     Route::middleware(['police'])->group(function () {
         Route::apiResource('vehicles', VehicleController::class);
         Route::apiResource('appeals', AppealController::class)->except(['create']);
-        Route::apiResource('violations', ViolationController::class)->except(['store']);
+        Route::apiResource('violations', ViolationController::class)->except(['store', 'update']);
         Route::prefix('notifications')->group(function () {
             Route::post('send-email', [NotificationController::class, 'sendEmail']); //send email
             Route::post('send-whatsapp', [NotificationController::class, 'sendWhatsApp']); //send whatsapp
@@ -43,6 +43,10 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
             Route::post('send-all', [NotificationController::class, 'sendAll']); //send all notifications
         });
         Route::apiResource('tickets', TicketController::class)->except(['create']);
+
+        // untuk verifikasi pelanggaran (violation) yang sudah ada
+        Route::get('create-token-verification/{id}', [ViolationController::class, 'createTokenForVerification']);
+        Route::put('verify-violation/{id}', [ViolationController::class, 'update'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //update violation status
     });
 });
 

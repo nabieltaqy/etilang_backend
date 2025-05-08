@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -10,12 +11,13 @@ use App\Models\Ticket;
 use App\Models\Vehicle;
 use App\Models\Violation;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken; // Import the PersonalAccessToken model
 
 class ViolationController extends Controller
 {
     public function index()
     {
-        $violations = Violation::with(['violationTypes', 'camera', 'ticket'])->get();
+        $violations = Violation::with(['violationTypes', 'camera', 'ticket'])->paginate(10);
         return ViolationResource::collection($violations);
     }
 
@@ -89,7 +91,7 @@ class ViolationController extends Controller
                 'vehicle_id'            => $vehicle_id,
                 'deadline_confirmation' => now()->addDays(3),
             ]);
-            
+
             return response()->json([
                 'message' => 'Ticket created',
                 'ticket'  => new TicketResource($ticket),
@@ -110,5 +112,31 @@ class ViolationController extends Controller
         ], 200);
     }
 
-    
+    public function createTokenForVerification(Request $request, $id)
+    {
+        // Ambil pelanggaran berdasarkan ID
+        $violation = Violation::findOrFail($id);
+
+        // Cek apakah ada token yang sudah dibuat untuk pelanggaran ini
+        $existingToken = PersonalAccessToken::where('name', 'violation-' . $id)->first();
+
+        // Jika ada token yang sudah ada, cek apakah token tersebut kadaluarsa
+        if ($existingToken) {
+            // Jika token masih valid
+            if ($existingToken->expires_at && now()->lessThan($existingToken->expires_at)) {
+                return response()->json(['message' => 'Token already exists and is still valid.'], 403);
+            }
+
+            // Jika token sudah kedaluwarsa, hapus token yang lama dan buat yang baru
+            $existingToken->delete();
+        }
+
+        // Buat token baru dengan nama unik dan ability khusus
+        $token = $request->user()->createToken('violation-' . $id, ['verify-violation'], now()->addMinutes(10));
+
+        return response()->json([
+            'message' => 'Token created successfully.',
+            'token' => $token->plainTextToken
+        ]);
+    }
 }
