@@ -30,7 +30,7 @@ class ViolationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'number'     => 'required|exists:vehicles,number',
+            'number'     => 'required',
             'stream_key' => 'required|exists:cameras,stream_key',
             'evidence'   => 'required|image|mimes:jpeg,png,jpg',
         ]);
@@ -57,53 +57,63 @@ class ViolationController extends Controller
         return response()->json(['message' => 'No evidence file uploaded'], 400);
     }
 
-    public function update(Request $request, $id)
-    { // masih belum kelar perlu apakah update terus create ticket dengan mencari nomor kendaran
+    public function updateNumber(Request $request, $id)
+    {
         $request->validate([
-            'status' => 'required|in:Terdeteksi,Tilang,Batal',
-            'number' => 'required|exists:vehicles,number',
-            'violation_id' => 'required|exists:violations,id',
+            'number'     => 'required'
         ]);
 
+        $violation = Violation::find($id);
+        if (!$violation) {
+            return response()->json(['message' => 'Violation not found'], 404);
+        }
+        $violation->number = $request->number;
+        $violation->save();
+        return response()->json([
+            'message'   => 'Violation updated',
+            'violation' => new ViolationResource($violation),
+        ], 200);
+    }
+
+    public function verifyViolation($id)
+    {
         // id checking if violation id exist on tickets
         $ticket = Ticket::where('violation_id', $id)->first();
         if ($ticket) {
             return response()->json(['message' => 'Violation already have ticket'], 400);
         }
 
-        $violation         = Violation::find($request->violation_id);
-        $violation->status = $request->status;
+        $violation         = Violation::find($id);
+        $violation->status = 'Tilang';
         $violation->save();
 
         // get user login
         $user = auth()->user();
 
-        // create ticket if status is Tilang
-        if ($request->status == 'Tilang') {
+        $vehicle_id = Vehicle::where('number', $violation->number)->first()->id;
 
-            // get vehicle id from number
-            $vehicle_id = Vehicle::where('number', $request->number)->first()->id;
+        $ticket = Ticket::create([
+            'violation_id'          => $violation->id,
+            'investigator_id'       => $user->id,
+            'status'                => 'Tilang',
+            'vehicle_id'            => $vehicle_id,
+            'deadline_confirmation' => now()->addDays(3),
+        ]);
 
-            $ticket = Ticket::create([
-                'violation_id'          => $violation->id,
-                'investigator_id'       => $user->id,
-                'status'                => 'Tilang',
-                'vehicle_id'            => $vehicle_id,
-                'deadline_confirmation' => now()->addDays(3),
-            ]);
-
-            return response()->json([
-                'message' => 'Ticket created',
-                'ticket'  => new TicketResource($ticket),
-            ], 201);
-
-            // create activity
-            Activity::create([
-                'ticket_id'   => $ticket->id,
-                'name'        => 'Tilang',
-                'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
-            ]);
-        }
+        //create activity if ticket created
+        if ($ticket){
+        Activity::create([
+            'ticket_id'   => $ticket->id,
+            'name'        => 'Tilang',
+            'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
+        ]);
+        };
+        
+        return response()->json([
+           'message' => 'Ticket created',
+            'ticket'  => new TicketResource($ticket),
+        ], 201);
+    
 
         // return new ViolationResource($violation);
         return response()->json([
@@ -112,9 +122,20 @@ class ViolationController extends Controller
         ], 200);
     }
 
+    public function cancelViolation($id)
+    {
+        $violation         = Violation::find($id);
+        $violation->status = 'Batal';
+        $violation->save();
+
+        return response()->json([
+            'message'   => 'Violation updated',
+            'violation' => new ViolationResource($violation),
+        ], 200);
+    }
+
     public function createTokenForVerification(Request $request, $id)
     {
-        // Ambil pelanggaran berdasarkan ID
         $violation = Violation::findOrFail($id);
 
         // Cek apakah ada token yang sudah dibuat untuk pelanggaran ini
