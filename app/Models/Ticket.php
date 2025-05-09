@@ -37,7 +37,7 @@ class Ticket extends Model
         return $this->belongsTo(Violation::class);
     }
 
-    public function user()
+    public function investigator()
     {
         return $this->belongsTo(User::class);
     }
@@ -54,7 +54,7 @@ class Ticket extends Model
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasOne(Transaction::class);
     }
 
     public function vehicle()

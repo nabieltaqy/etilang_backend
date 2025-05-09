@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
     Route::middleware(['police'])->group(function () {
         Route::apiResource('vehicles', VehicleController::class);
         Route::apiResource('appeals', AppealController::class)->except(['create']);
-        Route::apiResource('violations', ViolationController::class)->except(['store', 'updateNumber', 'verifyViolation', 'cancelViolation']);
+        Route::apiResource('violations', ViolationController::class)->except(['store','show', 'updateNumber', 'verifyViolation', 'cancelViolation']);
         Route::prefix('notifications')->group(function () {
             Route::post('send-email', [NotificationController::class, 'sendEmail']); //send email
             Route::post('send-whatsapp', [NotificationController::class, 'sendWhatsApp']); //send whatsapp
@@ -46,9 +46,10 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
 
         // untuk verifikasi pelanggaran (violation) yang sudah ada
         Route::get('create-token-verification/{id}', [ViolationController::class, 'createTokenForVerification']);
+        Route::get('violations/{id}', [ViolationController::class, 'show'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //show violation
         Route::put('update-violation/{id}', [ViolationController::class, 'updateNumber'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //update number plate
         Route::put('verify-violation/{id}', [ViolationController::class, 'verifyViolation'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //verify violation
-        Route::put('cancel-violation/{id}', [ViolationController::class, 'cancelViolation'])->middleware(['check.ability:cancel-violation', 'validate.violation.token']); //cancel violation
+        Route::put('cancel-violation/{id}', [ViolationController::class, 'cancelViolation'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //cancel violation
     });
 });
 

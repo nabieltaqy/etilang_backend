@@ -64,3 +64,8 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+<!-- update -->
+1. migrate ulang. karena ada penyesuaian tabel violation menambahkan kolom cancel description.
+2. tabel transaction diubah, foreign menjadi di tickets saja.

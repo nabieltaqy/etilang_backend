@@ -12,7 +12,7 @@ class TicketController extends Controller
     public function index()
     {
         // Logic to retrieve and return all tickets
-        $tickets = Ticket::with(['violation', 'user', 'hearingSchedule', 'vehicle', 'notifications', 'activities'])->paginate(10);
+        $tickets = Ticket::with(['violation', 'investigator', 'hearingSchedule', 'vehicle', 'notifications', 'activities'])->paginate(10);
 
         return TicketResource::collection($tickets);
     }
@@ -20,7 +20,7 @@ class TicketController extends Controller
     public function show($id)
     {
         // Logic to retrieve and return a specific ticket by ID
-        $ticket = Ticket::with(['violation', 'user', 'hearingSchedule', 'vehicle', 'notifications', 'activities'])->find($id);
+        $ticket = Ticket::with(['violation.vehicle', 'investigator', 'hearingSchedule', 'vehicle', 'notifications', 'activities'])->find($id);
         if (!$ticket) {
             return response()->json(['message' => 'Ticket not found'], 404);
         }

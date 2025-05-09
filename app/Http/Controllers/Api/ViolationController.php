@@ -122,10 +122,15 @@ class ViolationController extends Controller
         ], 200);
     }
 
-    public function cancelViolation($id)
+    public function cancelViolation(Request  $request, $id)
     {
+        $request->validate([
+            'cancel_description' => 'required'
+        ]);
+
         $violation         = Violation::find($id);
         $violation->status = 'Batal';
+        $violation->cancel_description = $request->cancel_description;
         $violation->save();
 
         return response()->json([
