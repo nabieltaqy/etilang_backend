@@ -14,4 +14,9 @@ class Vehicle extends Model
         return $this->hasMany(Ticket::class);
     }
 
+    public function violations()
+    {
+        return $this->hasMany(Violation::class);
+    }
+
 }
