@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Midtrans\Notification;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
+use App\Models\Ticket;
 
 
 class MidtransController extends Controller
@@ -27,11 +29,19 @@ class MidtransController extends Controller
             'amount' => 'required|numeric',
         ]);
 
+        // Cek apakah tiket sudah memiliki transaksi sebelumnya
+        $existingTransaction = Ticket::find($request->ticket_id)->transactions()->first();
+
+        // Jika ada transaksi yang sudah ada, hapus transaksi lama
+        if ($existingTransaction) {
+            // Hapus transaksi lama (misalnya, hapus berdasarkan order_id atau ID transaksi)
+            $existingTransaction->delete();
+        }
+
         // Membuat order_id dan transaction_details
         $orderId = 'ORDER-' . Str::substr($request->ticket_id, 0, 8) . '-' . time();  // Generate order_id yang unik
         $transactionDetails = [
-            'transaction_details' =>
-            [
+            'transaction_details' => [
                 'order_id' => $orderId,
                 'gross_amount' => $request->amount,
             ],
@@ -45,6 +55,12 @@ class MidtransController extends Controller
         // Kirim request untuk transaksi ke Midtrans
         $response = $this->midtransService->createTransaction($transactionDetails);
 
+        Activity::create([
+            'ticket_id' => $request->ticket_id,
+            'name' => 'Transaksi Dibuat',
+            'description' => 'Transaksi untuk tiket ID ' . $request->ticket_id . ' telah dibuat.',
+        ]);
+
         // Cek jika ada error dalam response
         if (isset($response['error'])) {
             return response()->json(['error' => $response['error']], 400);
@@ -54,21 +70,22 @@ class MidtransController extends Controller
         return response()->json(['snap_token' => $response]);
     }
 
+
     // mengambil status transaksi dari Midtrans
 
-//     public function getTransactionStatus($orderId)
-// {
-//     try {
-//         // Mendapatkan status transaksi berdasarkan order_id
-//         $status = Transaction::status($orderId);
+    //     public function getTransactionStatus($orderId)
+    // {
+    //     try {
+    //         // Mendapatkan status transaksi berdasarkan order_id
+    //         $status = Transaction::status($orderId);
 
-//         // Mengembalikan status transaksi dalam bentuk array
-//         return response()->json(['status' => $status ], 200);
+    //         // Mengembalikan status transaksi dalam bentuk array
+    //         return response()->json(['status' => $status ], 200);
 
-//     } catch (\Exception $e) {
-//         return response()->json(['error' => $e->getMessage()], 500);
-//     }
-// }
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
 
     // Untuk menerima dan menangani callback dari Midtrans
     // public function handleCallback(Request $request)
@@ -96,19 +113,19 @@ class MidtransController extends Controller
     //             // Pembayaran berhasil, update status menjadi 'success'
     //             $transaction->status = 'success';
     //             break;
-            
+
     //         case 'pending':
     //             // Pembayaran sedang diproses, tetap dalam status 'pending'
     //             $transaction->status = 'pending';
     //             break;
-            
+
     //         case 'cancel':
     //         case 'deny':
     //         case 'expire':
     //             // Pembayaran gagal, update status menjadi 'failed'
     //             $transaction->status = 'failed';
     //             break;
-            
+
     //         default:
     //             // Status lainnya bisa ditangani sesuai kebutuhan
     //             break;

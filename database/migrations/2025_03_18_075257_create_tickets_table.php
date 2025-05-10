@@ -18,12 +18,13 @@ return new class extends Migration
             $table->unsignedBigInteger('investigator_id')->nullable();
             $table->foreign('investigator_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('color', ['red', 'blue'])->nullable();
-            $table->enum('status', ['Tilang', 'Himbauan', 'Persidangan', 'Sudah Bayar', 'Lewat Tenggat'])->default('Tilang');
+            $table->enum('status', ['Tilang', 'Himbauan', 'Persidangan', 'Sudah Bayar', 'Lewat Tenggat','Pengajuan Banding', 'Banding Diterima'])->default('Tilang');
             $table->dateTime('deadline_confirmation');
             $table->unsignedBigInteger('hearing_schedule_id')->nullable();
             $table->foreign('hearing_schedule_id')->references('id')->on('hearing_schedules')->onDelete('cascade');
             $table->unsignedBigInteger('vehicle_id');
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
+            // $table->string('transaction_id')->nullable();
             $table->timestamps();
         });
     }

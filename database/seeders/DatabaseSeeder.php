@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\HearingSchedule;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
             VehicleSeeder::class,
             CameraSeeder::class,
             ViolationTypeSeeder::class,
+            HearingScheduleSeeder::class,
         ]);
     }
 }

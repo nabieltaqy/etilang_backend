@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppealResource;
 use App\Models\Appeal;
+use App\Models\Ticket;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 
 class AppealController extends Controller
 {
     public function index()
     {
-        $appeals = Appeal::with('ticket')->get();
+        $appeals = Appeal::with('ticket')->paginate(10);
 
         return AppealResource::collection($appeals);
     }
@@ -22,51 +24,38 @@ class AppealController extends Controller
         return new AppealResource($appeal);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'ticket_id'   => 'required|exists:tickets,id',
-            'argument'    => 'required',
-            'evidence'    => 'required|image|mimes:jpeg,png,jpg',
-        ]);
-
-        if ($request->hasFile('evidence')) {
-            $relative_path = $request->file('evidence')->store('appeal_evidences', 'public');
-        }
-
-        $appeal = Appeal::create([
-            'ticket_id'   => $request->ticket_id,
-            'argument'    => $request->argument,
-            'evidence'    => $relative_path,
-        ]);
-
-        return response()->json([
-            'message' => 'Appeal created successfully',
-            'appeal'  => new AppealResource($appeal),
-        ]);
-    }
-
     public function update(Request $request, $id)
     {
         $request->validate([
             'is_accepted' => 'required|boolean',
+            'note'       => 'required',
         ]);
 
-        $appeal = Appeal::find($id);
+        $ticket = Ticket::with(['appeal'])->find($id);
+
+        $appeal = $ticket->appeal;
         $appeal->update($request->all());
         $appeal->save();
+
+        if ($request->is_accepted==false) {
+            Activity::create([
+            'ticket_id'   => $id,
+            'name'        => 'Banding Ditolak',
+            'description' => 'Pengajuan Banding Ditolak',
+            ]);
+        } else {
+            Activity::create([
+            'ticket_id'   => $id,
+            'name'        => 'Banding Diterima',
+            'description' => 'Pengajuan Banding Diterima',
+            ]);
+            $ticket->update(['status' => 'Banding Diterima']);
+            $ticket->save();
+        }
 
         return response()->json([
             'message' => 'Appeal updated successfully',
             'appeal'  => new AppealResource($appeal),
         ]);
-    }
-
-    public function destroy($id)
-    {
-        $appeal = Appeal::find($id);
-        $appeal->delete();
-
-        return response()->json(['message' => 'Appeal deleted successfully']);
     }
 }

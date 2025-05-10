@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('argument');
             $table->string('evidence');
             $table->boolean('is_accepted')->nullable();
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }

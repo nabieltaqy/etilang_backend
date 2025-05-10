@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Models\HearingSchedule;
 use Illuminate\Http\Request;
 use App\Http\Resources\TicketResource;
+use Carbon\Carbon;
+use App\Models\Activity;
 
 class TicketController extends Controller
 {
     public function index()
     {
         // Logic to retrieve and return all tickets
-        $tickets = Ticket::with(['violation', 'user', 'hearingSchedule', 'vehicle', 'notifications', 'activities'])->paginate(10);
+        $tickets = Ticket::with(['violation', 'violation.camera', 'investigator', 'violation.vehicle', 'transaction'])->paginate(10);
 
         return TicketResource::collection($tickets);
     }
@@ -20,16 +23,11 @@ class TicketController extends Controller
     public function show($id)
     {
         // Logic to retrieve and return a specific ticket by ID
-        $ticket = Ticket::with(['violation', 'user', 'hearingSchedule', 'vehicle', 'notifications', 'activities'])->find($id);
+        $ticket = Ticket::with(['violation.vehicle', 'violation.camera', 'investigator', 'hearingSchedule', 'notifications', 'activities', 'transaction', 'appeal'])->find($id);
         if (!$ticket) {
             return response()->json(['message' => 'Ticket not found'], 404);
         }
         return new TicketResource($ticket);
-    }
-
-    public function store(Request $request)
-    {
-        // Logic to create a new ticket
     }
 
     public function update(Request $request, $id)
@@ -42,19 +40,5 @@ class TicketController extends Controller
         // Validate and update the ticket
         $ticket->update($request->all());
         return new TicketResource($ticket);
-    }
-
-    public function destroy($id)
-    {
-        // Logic to delete a ticket
-        $ticket = Ticket::find($id);
-        if (!$ticket) {
-            return response()->json(['message' => 'Ticket not found'], 404);
-        }
-        if ($ticket->delete()) {
-            return response()->json(['message' => 'Ticket deleted'], 200);
-        } else {
-            return response()->json(['message' => 'Failed to delete ticket'], 500);
-        }
     }
 }

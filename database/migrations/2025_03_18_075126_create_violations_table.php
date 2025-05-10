@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('violation_type_id')->default(1);
             $table->foreign('violation_type_id')->references('id')->on('violation_types')->onDelete('cascade');
             $table->enum('status', ['Terdeteksi', 'Tilang', 'Batal'])->default('Terdeteksi');
+            $table->string('cancel_description')->nullable();
             $table->timestamps();
         });
     }
