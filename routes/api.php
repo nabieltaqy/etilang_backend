@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ViolationController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\MidtransController;
+use App\Http\Controllers\Api\PublicAccessController;
 
 // use Illuminate\Http\Request;
 
@@ -57,8 +58,12 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
 Route::post('detected-violation', [ViolationController::class, 'store']); //send evidence from edge computing
 
 //all user can access
-Route::post('appeals', [AppealController::class, 'store']);
-Route::prefix('midtrans')->group(function () {
+Route::prefix('public')->group(function () {
+Route::post('appeal', [PublicAccessController::class, 'appealStore']); //pengajuan banding
+Route::get('attend-hearing/{id}', [PublicAccessController::class, 'attendHearing']); //violator chooses hearing schedule
+Route::get('tickets/{id}/{number}', [PublicAccessController::class, 'showTicket']); //show ticket
+Route::prefix('midtrans')->group(function () { // transaction
     Route::post('transaction', [MidtransController::class, 'createTransaction']);
     // Route::get('callback', [MidtransController::class, 'getTransactionStatus']);
+});
 });

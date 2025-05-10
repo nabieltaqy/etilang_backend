@@ -30,7 +30,7 @@ class NotificationController extends Controller
         $vehicleInfo = $ticket->vehicle;
         $owner_email = $vehicleInfo->owner_email;
         $owner_phone = $vehicleInfo->owner_phone;
-        $message = "You have a new ticket with id: $ticket->id. Please check your email for more details.";
+        $message = "You have a new ticket with id: $ticket->id. Please check" . env('APP_URL') . "for more details. \n Korlantas Polri";
 
         $whatsappResult = $this->fonnte->sendWhatsapp($owner_phone, $message);
         $smsResult = $this->sms->sendSMS($owner_phone, $message);
@@ -79,7 +79,9 @@ class NotificationController extends Controller
         $ticket = Ticket::with(['vehicle'])->findOrFail($id);
         $vehicleInfo = $ticket->vehicle;
         $owner_phone = $vehicleInfo->owner_phone;
-        $message = "You have a new ticket with id: $ticket->id. Please check your email for more details.";
+        $message = "You have a new ticket with id: $ticket->id. Please check" . env('APP_URL') . "for more details. \n Korlantas Polri";
+
+        
 
         $smsResult = $this->sms->sendSMS($owner_phone, $message);
 
@@ -106,7 +108,7 @@ class NotificationController extends Controller
         $ticket = Ticket::with(['vehicle'])->findOrFail($id);
         $vehicleInfo = $ticket->vehicle;
         $owner_phone = $vehicleInfo->owner_phone;
-        $message = "You have a new ticket with id: $ticket->id. Please check your email for more details.";
+        $message = "You have a new ticket with id: $ticket->id. Please check" . env('APP_URL') . "for more details. \n Korlantas Polri";
 
         $whatsappResult = $this->fonnte->sendWhatsapp($owner_phone, $message);
 
@@ -131,7 +133,7 @@ class NotificationController extends Controller
         $ticket = Ticket::with(['vehicle'])->findOrFail($id);
         $vehicleInfo = $ticket->vehicle;
         $owner_email = $vehicleInfo->owner_email;
-        $message = "You have a new ticket with id: $ticket->id. Please check your email for more details.";
+        $message = "You have a new ticket with id: $ticket->id. Please check" . env('APP_URL') . "for more details. \n Korlantas Polri";
 
         $emailResult = $this->email->send($owner_email, $message);
 
@@ -143,6 +145,56 @@ class NotificationController extends Controller
         ])->touch();
 
         return response()->json([
+            'email' => [
+                'status' => $emailResult['status'] === 'sent',
+                'message' => $emailResult['status'] ?? 'error',
+            ]
+        ]);
+    }
+
+    public function appealVerification($id)
+    {
+        //get phone number and email from ticket
+        $ticket = Ticket::with(['vehicle', 'vehicle'])->findOrFail($id);
+        $vehicleInfo = $ticket->vehicle;
+        $owner_email = $vehicleInfo->owner_email;
+        $owner_phone = $vehicleInfo->owner_phone;
+        $message = "Your appeal for ticket id: $ticket->id has been verified. Your Ticket has been canceled. \n Korlantas Polri";
+
+        $whatsappResult = $this->fonnte->sendWhatsapp($owner_phone, $message);
+        $smsResult = $this->sms->sendSMS($owner_phone, $message);
+        $emailResult = $this->email->send($owner_email, $message);
+
+        // crete history notification
+        Notification::updateOrCreate([
+            'type' => 'whatsapp',
+            'ticket_id' => $ticket->id,
+            'is_sent' => $whatsappResult['status'] ?? false,
+        ])->touch();
+
+        Notification::updateOrCreate([
+            'type' => 'sms',
+            'ticket_id' => $ticket->id,
+            'is_sent' => $smsResult['success'] ?? false,
+        ])->touch();
+
+        Notification::updateOrCreate([
+            'type' => 'email',
+            'ticket_id' => $ticket->id,
+            'is_sent' => $emailResult['status'] === 'sent',
+        ])->touch();
+
+        return response()->json([
+            'whatsapp' => [
+                'status' => $whatsappResult['status'] ?? false,
+                'message' => $whatsappResult['detail'] ?? 'error',
+            ],
+            'sms' => [
+                'status' => $smsResult['success'] ?? false,
+                'message' => isset($smsResult['data']['messages'][0]['status'])
+                    ? $smsResult['data']['messages'][0]['status']
+                    : ($smsResult['error']['message'] ?? 'unknown'),
+            ],
             'email' => [
                 'status' => $emailResult['status'] === 'sent',
                 'message' => $emailResult['status'] ?? 'error',

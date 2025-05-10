@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Midtrans\Notification;
@@ -53,6 +54,12 @@ class MidtransController extends Controller
 
         // Kirim request untuk transaksi ke Midtrans
         $response = $this->midtransService->createTransaction($transactionDetails);
+
+        Activity::create([
+            'ticket_id' => $request->ticket_id,
+            'name' => 'Transaksi Dibuat',
+            'description' => 'Transaksi untuk tiket ID ' . $request->ticket_id . ' telah dibuat.',
+        ]);
 
         // Cek jika ada error dalam response
         if (isset($response['error'])) {
