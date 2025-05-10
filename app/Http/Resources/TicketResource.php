@@ -16,7 +16,8 @@ class TicketResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'violation_id' => $this->violation_id,
+            // 'violation_id' => $this->violation_id,
+            'violation' => new ViolationResource($this->whenLoaded('violation')),
             // 'investigator_id' => $this->investigator_id,
             'investigator' => new UserResource($this->whenLoaded('investigator')),
             'color' => $this->color,
@@ -24,8 +25,13 @@ class TicketResource extends JsonResource
             'deadline_confirmation' => $this->deadline_confirmation,
             // 'hearing_schedule_id' => new HearingScheduleResource($this->whenLoaded('hearingSchedule')),
             'hearing_schedule' => new HearingScheduleResource($this->whenLoaded('hearingSchedule')),
+            'appeal' => new AppealResource($this->whenLoaded('appeal')),
+            // 'notifications' => NotificationResource::collection($this->whenLoaded('notifications')),
             'vehicle' => new VehicleResource(optional($this->violation->vehicle)),
-            'payment' => $this->payment,
+            'payment' => new TransactionResource($this->whenLoaded('transaction')),
+            'activities' => ActivityResource::collection($this->whenLoaded('activities')),
+            'notifications' => NotificationResource::collection($this->whenLoaded('notifications')),
+            'camera' => new CameraResource($this->whenLoaded('violation.camera')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

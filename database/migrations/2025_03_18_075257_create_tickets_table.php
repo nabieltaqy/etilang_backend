@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreign('hearing_schedule_id')->references('id')->on('hearing_schedules')->onDelete('cascade');
             $table->unsignedBigInteger('vehicle_id');
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
-            $table->string('transaction_id')->nullable();
+            // $table->string('transaction_id')->nullable();
             $table->timestamps();
         });
     }

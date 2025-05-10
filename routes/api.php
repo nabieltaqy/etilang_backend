@@ -37,10 +37,10 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
         Route::apiResource('appeals', AppealController::class)->except(['create']);
         Route::apiResource('violations', ViolationController::class)->except(['store','show', 'updateNumber', 'verifyViolation', 'cancelViolation']);
         Route::prefix('notifications')->group(function () {
-            Route::post('send-email', [NotificationController::class, 'sendEmail']); //send email
-            Route::post('send-whatsapp', [NotificationController::class, 'sendWhatsApp']); //send whatsapp
-            Route::post('send-sms', [NotificationController::class, 'sendSMS']); //send SMS
-            Route::post('send-all', [NotificationController::class, 'sendAll']); //send all notifications
+            Route::get('send-email/{id}', [NotificationController::class, 'sendEmail']); //send email
+            Route::get('send-whatsapp/{id}', [NotificationController::class, 'sendWhatsApp']); //send whatsapp
+            Route::get('send-sms/{id}', [NotificationController::class, 'sendSMS']); //send SMS
+            Route::get('send-all/{id}', [NotificationController::class, 'sendAll']); //send all notifications
         });
         Route::apiResource('tickets', TicketController::class)->except(['create']);
 

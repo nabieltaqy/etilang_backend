@@ -67,5 +67,8 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 
 <!-- update -->
-1. migrate ulang. karena ada penyesuaian tabel violation menambahkan kolom cancel description.
+1. migrate ulang. karena ada,
+    - penyesuaian tabel violations menambahkan kolom cancel description.
+    - penyesuaian tabel notifications menambahkan kolom is_sent sebagai parameter pesan sudah kekirim atau belum.
+    - penyesuaian tabel appeals menambahkan kolom note untuk menampilkan catatan.
 2. tabel transaction diubah, foreign menjadi di tickets saja.
