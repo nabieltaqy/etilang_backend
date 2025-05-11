@@ -31,24 +31,19 @@ class AuthController extends Controller
          $token = $user->createToken('auth_token')->plainTextToken;
 
         if ($user->is_2fa_enabled==true) {
-            // if 2fa enabled, check if user has 2fa secret
-        return response()->json(
+            $message = 'You Need to Verify 2FA';
+
+        } else {
+            $message = 'You Need to Register 2FA';
+        }
+        //return token for user || need argument for token name
+                return response()->json(
             [
-                'message' => 'Enter OTP for 2FA',
+                'message' => $message,
+                'is_2fa_enabled' => $user->is_2fa_enabled,
                 'token' => $token,
             ]
         );
-        } else {
-            // if 2fa not enabled, create token and return
-           
-            return response()->json(
-                [
-                    'message' => 'You Need to Register 2FA',
-                    'token' => $token,
-                ]
-            );
-        }
-        //return token for user || need argument for token name
         
     }
 
