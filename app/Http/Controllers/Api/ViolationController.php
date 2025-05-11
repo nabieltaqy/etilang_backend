@@ -75,7 +75,7 @@ class ViolationController extends Controller
         ], 200);
     }
 
-    public function verifyViolation($id)
+    public function verifyViolation(Request $request, $id)
     {
         // id checking if violation id exist on tickets
         $ticket = Ticket::where('violation_id', $id)->first();
@@ -101,25 +101,21 @@ class ViolationController extends Controller
         ]);
 
         //create activity if ticket created
-        if ($ticket){
-        Activity::create([
-            'ticket_id'   => $ticket->id,
-            'name'        => 'Tilang',
-            'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
-        ]);
+        if ($ticket) {
+            Activity::create([
+                'ticket_id'   => $ticket->id,
+                'name'        => 'Tilang',
+                'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
+            ]);
         };
-        
+
+        // revoke the token
+        $request->user()->currentAccessToken()->delete();
+
         return response()->json([
-           'message' => 'Ticket created',
+            'message' => 'Ticket created and token revoked',
             'ticket'  => new TicketResource($ticket),
         ], 201);
-    
-
-        // return new ViolationResource($violation);
-        return response()->json([
-            'message'   => 'Violation updated',
-            'violation' => new ViolationResource($violation),
-        ], 200);
     }
 
     public function cancelViolation(Request  $request, $id)
@@ -133,8 +129,11 @@ class ViolationController extends Controller
         $violation->cancel_description = $request->cancel_description;
         $violation->save();
 
+        // revoke the token
+        $request->user()->currentAccessToken()->delete();
+
         return response()->json([
-            'message'   => 'Violation updated',
+            'message'   => 'Violation updated and token revoked',
             'violation' => new ViolationResource($violation),
         ], 200);
     }
@@ -164,5 +163,12 @@ class ViolationController extends Controller
             'message' => 'Token created successfully.',
             'token' => $token->plainTextToken
         ]);
+    }
+
+    public function revokeToken(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Token revoked successfully.'], 200);
     }
 }

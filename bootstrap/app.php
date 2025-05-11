@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'validate.violation.token' => App\Http\Middleware\ValidateViolationToken::class,
             'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
             'check.ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
+            'checkViolationTicket' => App\Http\Middleware\CheckViolationTicket::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
