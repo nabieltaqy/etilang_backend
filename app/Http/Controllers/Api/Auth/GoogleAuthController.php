@@ -71,14 +71,14 @@ class GoogleAuthController extends Controller
             $user->is_2fa_enabled = true;
             $user->save();
             return response()->json([
-                '2fa_verified' => true,
+                'is_2fa_verified' => true,
                 // 'message' => '2fa enabled',
                 'user' => new UserResource($user),
                 'token' => $token,
             ], 200);
         }
         return response()->json([
-            '2fa_verified' => false,
+            'is_2fa_verified' => false,
             'message' => 'OTP is invalid',
         ], 401);
     }
