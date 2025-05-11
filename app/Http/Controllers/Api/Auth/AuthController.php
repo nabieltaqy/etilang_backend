@@ -28,14 +28,28 @@ class AuthController extends Controller
         //delete all existing user token
         $user->tokens()->delete();
 
-        //return token for user || need argument for token name
+         $token = $user->createToken('auth_token')->plainTextToken;
+
+        if ($user->is_2fa_enabled==true) {
+            // if 2fa enabled, check if user has 2fa secret
         return response()->json(
             [
                 'message' => 'Enter OTP for 2FA',
-                // 'user' => $user,
-                'token' => $user->createToken('temp_token')->plainTextToken
+                'token' => $token,
             ]
         );
+        } else {
+            // if 2fa not enabled, create token and return
+           
+            return response()->json(
+                [
+                    'message' => 'You Need to Register 2FA',
+                    'token' => $token,
+                ]
+            );
+        }
+        //return token for user || need argument for token name
+        
     }
 
     function logout(Request $request)
