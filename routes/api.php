@@ -18,10 +18,10 @@ use App\Http\Controllers\Api\PublicAccessController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->middleware('guest');
-    Route::get('logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'ensure2FA']);
+    Route::post('logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'ensure2FA']);
     Route::get('2fa-registration', [GoogleAuthController::class, 'show2faRegistration'])->middleware('auth:sanctum'); //show qr code for 2fa registration
     Route::post('2fa-verify', [GoogleAuthController::class, 'verify2fa'])->middleware(['auth:sanctum', 'ensure2FAEnabled']); //verify 2fa code
-    Route::post('2fa-disable/{id}', [GoogleAuthController::class, 'disable2fa'])->middleware(['auth:sanctum', 'ensure2FA']); //disable 2fa only admin
+    Route::get('2fa-disable/{id}', [GoogleAuthController::class, 'disable2fa'])->middleware(['auth:sanctum', 'ensure2FA']); //disable 2fa only admin
 });
 
 // Middleware with auth token
