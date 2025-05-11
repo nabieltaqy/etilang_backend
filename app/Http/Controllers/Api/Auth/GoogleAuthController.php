@@ -6,6 +6,7 @@ use App\Models\User;
 use Endroid\QrCode\QrCode;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
+use App\Http\Resources\UserResource;
 
 //qr code generator
 use App\Http\Controllers\Controller;
@@ -72,7 +73,7 @@ class GoogleAuthController extends Controller
             return response()->json([
                 '2fa_verified' => true,
                 // 'message' => '2fa enabled',
-                // 'user' => $user,
+                'user' => new UserResource($user),
                 'token' => $token,
             ], 200);
         }
