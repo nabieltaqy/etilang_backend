@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
 use App\Http\Resources\ViolationResource;
+use App\Http\Resources\ViolationSummaryResource;
 use App\Models\Activity;
 use App\Models\Camera;
 use App\Models\Ticket;
@@ -18,7 +19,7 @@ class ViolationController extends Controller
     public function index()
     {
         $violations = Violation::with(['violationType', 'camera', 'ticket', 'vehicle'])->paginate(10);
-        return ViolationResource::collection($violations);
+        return ViolationSummaryResource::collection($violations);
     }
 
     public function show($id)
