@@ -33,11 +33,14 @@ class ViolationController extends Controller
         $request->validate([
             'number'     => 'required',
             'stream_key' => 'required|exists:cameras,stream_key',
-            'evidence'   => 'required|image|mimes:jpeg,png,jpg',
+            'violation_evidence'   => 'required|image|mimes:jpeg,png,jpg',
+            'number_evidence' => 'required|image|mimes:jpeg,png,jpg',
         ]);
 
-        if ($request->hasFile('evidence')) {
-            $relative_path = $request->file('evidence')->store('violance_evidences', 'public');
+        if ($request->hasFile('violation_evidence') && $request->hasFile('number_evidence')) {
+            // Store the uploaded files
+            $violation_relative_path = $request->file('violation_evidence')->store('violance_evidences', 'public');
+            $number_relative_path = $request->file('number_evidence')->store('number_evidences', 'public');
 
             // $vehicle_id = Vehicle::where('number', $request->number)->first()->id;
             $camera_id  = Camera::where('stream_key', $request->stream_key)->first()->id;
@@ -45,7 +48,8 @@ class ViolationController extends Controller
             $violation = Violation::create([
                 'number' => $request->number,
                 'camera_id'  => $camera_id,
-                'evidence'   => $relative_path,
+                'violation_evidence'   => $violation_relative_path,
+                'number_evidence' => $number_relative_path,
             ]);
 
             // return new ViolationResource($violation);

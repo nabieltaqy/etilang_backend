@@ -18,7 +18,8 @@ return new class extends Migration
             // $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
             $table->unsignedBigInteger('camera_id');
             $table->foreign('camera_id')->references('id')->on('cameras')->onDelete('cascade');
-            $table->string('evidence');
+            $table->string('violation_evidence');
+            $table->string('number_evidence');
             $table->unsignedBigInteger('violation_type_id')->default(1);
             $table->foreign('violation_type_id')->references('id')->on('violation_types')->onDelete('cascade');
             $table->enum('status', ['Terdeteksi', 'Tilang', 'Batal'])->default('Terdeteksi');

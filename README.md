@@ -27,6 +27,7 @@ https://www.postman.com/lunar-module-architect-83177549/workspace/tugas-akhir-e-
     - penyesuaian tabel notifications menambahkan kolom is_sent sebagai parameter pesan sudah kekirim atau belum.
     - penyesuaian tabel appeals menambahkan kolom note untuk menampilkan catatan.
     - penyesuaian tabel tickets pada kolom status menambahkan banding diterima, dan pengajuan banding.
+    - penyesuaian tabel violations menjadi ada 2 foto evidence (motor dan plat).
 2. tabel transaction diubah, foreign menjadi di tickets saja.
 
 ## Confusion

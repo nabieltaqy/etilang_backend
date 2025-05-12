@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -59,6 +60,21 @@ class AuthController extends Controller
         return response()->json(
             [
                 'message' => 'Logout Succesful',
+            ]
+        );
+    }
+
+    function getUserData(Request $request)
+    {
+        return response()->json(
+            [
+                'user' => [
+                    'id' => $request->user()->id,
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                    'role' => $request->user()->role,
+                    'is_2fa_enabled' => $request->user()->is_2fa_enabled,
+                ],
             ]
         );
     }

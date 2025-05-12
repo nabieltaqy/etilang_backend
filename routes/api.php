@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\MidtransController;
 use App\Http\Controllers\Api\PublicAccessController;
+use Illuminate\Container\Attributes\Auth;
 
 // use Illuminate\Http\Request;
 
@@ -26,6 +27,9 @@ Route::prefix('auth')->group(function () {
 
 // Middleware with auth token
 Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
+
+    // all  role can access
+    Route::get('user-data', [AuthController::class, 'getUserData']); //get user data
 
     //only admin can access
     Route::middleware(['admin'])->group(function () {
