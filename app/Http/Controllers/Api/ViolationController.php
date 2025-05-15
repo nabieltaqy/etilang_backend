@@ -18,7 +18,10 @@ class ViolationController extends Controller
 {
     public function index()
     {
-        $violations = Violation::with(['violationType', 'camera', 'ticket', 'vehicle'])->paginate(10);
+        $violations = Violation::with(['violationType', 'camera', 'ticket', 'vehicle'])
+            ->orderBy('status')
+            ->orderByDesc('created_at')
+            ->paginate(10);
         return ViolationSummaryResource::collection($violations);
     }
 
