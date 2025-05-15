@@ -14,7 +14,7 @@ class ViolationSummaryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-         return [
+        return [
             'id' => $this->id,
             'number' => $this->number,
             'location' => $this->camera?->location,
@@ -22,6 +22,8 @@ class ViolationSummaryResource extends JsonResource
             'status' => $this->status,
             'evidence' => $this->number_evidence,
             'created_at' => $this->created_at,
+            'ticket_id' => $this->ticket?->id,
+            // 'ticket_id' => $this->whenLoaded(new TicketResource($this)),
         ];
     }
 }
