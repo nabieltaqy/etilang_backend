@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use App\Models\HearingSchedule;
 use Illuminate\Http\Request;
 use App\Http\Resources\TicketResource;
+use App\Http\Resources\TicketSummaryResource;
 use Carbon\Carbon;
 use App\Models\Activity;
 
@@ -15,9 +16,12 @@ class TicketController extends Controller
     public function index()
     {
         // Logic to retrieve and return all tickets
-        $tickets = Ticket::with(['violation', 'violation.camera', 'investigator', 'violation.vehicle', 'transaction'])->paginate(10);
+        $tickets = Ticket::with(['violation', 'violation.camera', 'investigator', 'violation.vehicle', 'transaction'])
+            ->orderBy('status')
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
-        return TicketResource::collection($tickets);
+        return TicketSummaryResource::collection($tickets);
     }
 
     public function show($id)

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ViolationSummaryResource extends JsonResource
+class TicketSummaryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -13,14 +13,15 @@ class ViolationSummaryResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-    {
+  {
          return [
             'id' => $this->id,
-            'number' => $this->number,
-            'location' => $this->camera?->location,
-            'violation_type' => $this->violationType->name,
+            'number' => $this->violation?->number,
+            'violation_type' => $this->violation?->violationType?->name,
+            'location' => $this->violation?->camera?->location,
+            'investigator' => $this->investigator?->name,
             'status' => $this->status,
-            'evidence' => $this->number_evidence,
+            'number_evidence' => $this->violation?->number_evidence,
             'created_at' => $this->created_at,
         ];
     }
