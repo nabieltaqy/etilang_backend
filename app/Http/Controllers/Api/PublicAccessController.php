@@ -100,6 +100,9 @@ class PublicAccessController extends Controller
         $ticket->hearing_schedule_id = $schedule->id;
         $ticket->save();
 
-        return new TicketResource($ticket);
+        return response()->json([
+            'message' => 'Hearing schedule selected successfully',
+            'schedule' => $schedule,
+        ]);
     }
 }
