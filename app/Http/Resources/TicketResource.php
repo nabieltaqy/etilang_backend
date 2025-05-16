@@ -32,6 +32,7 @@ class TicketResource extends JsonResource
             'notifications' => NotificationResource::collection($this->whenLoaded('notifications')),
             'camera' => new CameraResource($this->whenLoaded('violation.camera')),
             'appeal' => new AppealResource($this->whenLoaded('appeal')),
+            'violation_type' => new ViolationTypeResource($this->whenLoaded('violation.violationType')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

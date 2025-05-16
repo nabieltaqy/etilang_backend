@@ -27,7 +27,7 @@ class TicketController extends Controller
     public function show($id)
     {
         // Logic to retrieve and return a specific ticket by ID
-        $ticket = Ticket::with(['violation.vehicle', 'violation.camera', 'investigator', 'hearingSchedule', 'notifications', 'activities', 'transaction', 'appeal'])->find($id);
+        $ticket = Ticket::with(['violation.vehicle', 'violation.camera', 'investigator', 'hearingSchedule', 'notifications', 'activities', 'transaction', 'appeal', 'violation.violationType'])->find($id);
         if (!$ticket) {
             return response()->json(['message' => 'Ticket not found'], 404);
         }
