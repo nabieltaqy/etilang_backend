@@ -32,7 +32,7 @@ class AppealController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'is_accepted' => 'required|boolean',
+            'status' => 'required|in:accepted,rejected',
             'note'       => 'required',
         ]);
 
@@ -42,7 +42,7 @@ class AppealController extends Controller
         $appeal->update($request->all());
         $appeal->save();
 
-        if ($request->is_accepted == false) {
+        if ($request->status == 'Rejected') {
             Activity::create([
                 'ticket_id'   => $id,
                 'name'        => 'Banding Ditolak',

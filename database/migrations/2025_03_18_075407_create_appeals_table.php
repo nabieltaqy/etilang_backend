@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
             $table->string('argument');
             $table->string('evidence');
-            $table->boolean('is_accepted')->nullable();
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->string('note')->nullable();
             $table->timestamps();
         });
