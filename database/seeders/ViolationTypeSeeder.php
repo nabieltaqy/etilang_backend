@@ -18,6 +18,7 @@ class ViolationTypeSeeder extends Seeder
                     'name'=>'Tidak Menggunakan Helm',
                     'regulation'=>'Pasal 106 ayat (8) - Kewajiban Menggunakan Helm',
                     'description' => "Setiap orang yang mengemudikan Sepeda Motor dan Penumpangnya wajib mengenakan helm yang memenuhi standar nasional Indonesia.",
+                    'max_fine'=>'250000',
                 ],
             ]);
     }
