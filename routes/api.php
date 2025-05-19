@@ -69,6 +69,6 @@ Route::get('attend-hearing/{id}', [PublicAccessController::class, 'attendHearing
 Route::get('tickets/{id}/{number}', [PublicAccessController::class, 'showTicket']); //show ticket
 Route::prefix('midtrans')->group(function () { // transaction
     Route::post('transaction', [MidtransController::class, 'createTransaction']);
-    // Route::get('callback', [MidtransController::class, 'getTransactionStatus']);
+    Route::post('callback', [MidtransController::class, 'callback']);
 });
 });

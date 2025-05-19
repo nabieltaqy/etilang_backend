@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\Ticket;
+use App\Models\Transaction;
 use App\Services\MidtransService;
 use Illuminate\Http\Request;
-use Midtrans\Notification;
-use App\Models\Transaction;
 use Illuminate\Support\Str;
-use App\Models\Ticket;
+use Midtrans\Notification;
 
 
 class MidtransController extends Controller
@@ -29,7 +29,7 @@ class MidtransController extends Controller
             // 'amount' => 'required|numeric',
         ]);
 
-        $ticket = Ticket::with(['violation.violationType'])->find($request->ticket_id);
+        $ticket   = Ticket::with(['violation.violationType'])->find($request->ticket_id);
         $max_fine = $ticket->violation->violationType->max_fine;
 
         // Cek apakah tiket sudah memiliki transaksi sebelumnya
@@ -42,14 +42,15 @@ class MidtransController extends Controller
         }
 
         // Membuat order_id dan transaction_details
-        $orderId = 'ORDER-' . Str::substr($request->ticket_id, 0, 8) . '-' . time();  // Generate order_id yang unik
+        $orderId            = 'ORDER-' . Str::substr($request->ticket_id, 0, 8) . '-' . time(); // Generate order_id yang unik
         $transactionDetails = [
             'transaction_details' => [
-                'order_id' => $orderId,
-                'gross_amount' => $max_fine, // Jumlah total yang harus dibayar
+                'order_id'     => $orderId,
+                // 'gross_amount' => $max_fine, // Jumlah total yang harus dibayar
+                'gross_amount' => 10, // Jumlah total yang harus dibayar
             ],
-            'ticket_id' => $request->ticket_id,
-            'credit_card' => [
+            'ticket_id'           => $request->ticket_id,
+            'credit_card'         => [
                 'secure' => true, // Menggunakan 3D Secure
             ],
         ];
@@ -58,8 +59,8 @@ class MidtransController extends Controller
         $response = $this->midtransService->createTransaction($transactionDetails);
 
         Activity::create([
-            'ticket_id' => $request->ticket_id,
-            'name' => 'Transaksi Dibuat',
+            'ticket_id'   => $request->ticket_id,
+            'name'        => 'Transaksi Dibuat',
             'description' => 'Transaksi untuk tiket ID ' . $request->ticket_id . ' telah dibuat.',
         ]);
 
@@ -71,4 +72,56 @@ class MidtransController extends Controller
         // Mengembalikan snap_token atau informasi transaksi lainnya
         return response()->json(['snap_token' => $response]);
     }
+
+    public function callback(Request $request)
+{
+    try {
+        // Ambil data dari body request
+        $notification = json_decode($request->getContent());
+
+        $transactionStatus = $notification->transaction_status;
+        $paymentType       = $notification->payment_type;
+        $fraudStatus       = $notification->fraud_status ?? null;
+        $orderId           = $notification->order_id;
+        $transactionId     = $notification->transaction_id ?? null;
+
+        // Cari transaksi di database
+        $transaction = Transaction::where('order_id', $orderId)->first();
+
+        if (! $transaction) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        // Update transaksi
+        $transaction->status         = $transactionStatus;
+        $transaction->payment_method = $paymentType;
+        $transaction->save();
+
+        // Ubah status tiket jika pembayaran sukses
+        if (
+            $transactionStatus === 'settlement' ||
+            ($transactionStatus === 'capture' && $paymentType === 'credit_card' && $fraudStatus === 'accept')
+        ) {
+            $ticket = Ticket::find($transaction->ticket_id);
+            if ($ticket) {
+                $ticket->status = 'Sudah Bayar';
+                $ticket->save();
+            }
+        }
+
+        // Catat aktivitas
+        Activity::create([
+            'ticket_id'   => $transaction->ticket_id,
+            'name'        => 'Transaksi Diterima',
+            'description' => 'Status: ' . $transactionStatus,
+        ]);
+
+        return response()->json(['message' => 'Callback diproses'], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Terjadi kesalahan saat memproses callback',
+            'debug' => $e->getMessage()
+        ], 500);
+    }
+}
 }
