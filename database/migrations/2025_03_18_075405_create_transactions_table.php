@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
             $table->string('amount');
             $table->string('payment_method')->nullable();
-            // $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
             $table->string('status')->default('pending');
+            $table->enum('type', ['denda', 'sidang'])->nullable();
             $table->timestamps();
         });
     }
