@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('amount');
             $table->string('payment_method')->nullable();
             $table->string('status')->default('pending');
-            $table->string('type')->nullable();
+            $table->enum('status', ['denda', 'sidang'])->nullable();
             $table->timestamps();
         });
     }
