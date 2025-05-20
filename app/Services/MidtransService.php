@@ -54,6 +54,7 @@ class MidtransService
                     'ticket_id' => $transactionDetails['ticket_id'],
                     'order_id' => $transactionDetails['transaction_details']['order_id'],
                     'amount' => $transactionDetails['transaction_details']['gross_amount'],
+                    'type' => $transactionDetails['type'],
                     'payment_method' => null, 
                     'status' => 'pending', // Status sementara, akan diupdate setelah callback Midtrans
                 ]);
