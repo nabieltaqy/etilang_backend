@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('regulation');
             $table->string('description');
-            $table->string('max_fine');
+            $table->integer('max_fine');
             $table->timestamps();
         });
     }
