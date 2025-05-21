@@ -74,7 +74,9 @@ class NotificationController extends Controller
         //         // 'message' => $emailResult, //for debug
         //     ]
         // ]);
-        return NotificationResource::collection($ticket);
+        return NotificationResource::collection($ticket->notifications)->groupBy(function ($item) {
+    return $item->type;
+});
     }
 
     public function sendSMS($id)
