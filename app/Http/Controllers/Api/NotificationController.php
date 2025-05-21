@@ -38,6 +38,9 @@ class NotificationController extends Controller
         $smsResult = $this->sms->sendSMS($owner_phone, $message);
         $emailResult = $this->email->send($owner_email, $message);
 
+        $ticket->status = 'Himbauan';
+        $ticket->save();
+
         // crete history notification
         Notification::updateOrCreate([
             'type' => 'whatsapp',
