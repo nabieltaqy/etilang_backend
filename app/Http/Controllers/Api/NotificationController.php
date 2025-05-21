@@ -68,8 +68,8 @@ class NotificationController extends Controller
             ],
             'email' => [
                 'status' => $emailResult['status'] === 'sent',
-                // 'message' => $emailResult['status'] ?? 'error',
-                'message' => $emailResult,
+                'message' => $emailResult['status'] ?? 'error',
+                // 'message' => $emailResult, //for debug
             ]
         ]);
     }
