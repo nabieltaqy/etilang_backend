@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NotificationResource;
 use Illuminate\Http\Request;
 use App\Services\FonnteService;
 use App\Services\SMS8Service;
 use App\Services\EmailService;
 use App\Models\Notification;
 use App\Models\Ticket;
+
 
 class NotificationController extends Controller
 {
@@ -55,23 +57,24 @@ class NotificationController extends Controller
             'is_sent' => $emailResult['status'] === 'sent',
         ])->touch();
 
-        return response()->json([
-            'whatsapp' => [
-                'status' => $whatsappResult['status'] ?? false,
-                'message' => $whatsappResult['detail'] ?? 'error',
-            ],
-            'sms' => [
-                'status' => $smsResult['success'] ?? false,
-                'message' => isset($smsResult['data']['messages'][0]['status'])
-                    ? $smsResult['data']['messages'][0]['status']
-                    : ($smsResult['error']['message'] ?? 'unknown'),
-            ],
-            'email' => [
-                'status' => $emailResult['status'] === 'sent',
-                'message' => $emailResult['status'] ?? 'error',
-                // 'message' => $emailResult, //for debug
-            ]
-        ]);
+        // return response()->json([
+        //     'whatsapp' => [
+        //         'status' => $whatsappResult['status'] ?? false,
+        //         'message' => $whatsappResult['detail'] ?? 'error',
+        //     ],
+        //     'sms' => [
+        //         'status' => $smsResult['success'] ?? false,
+        //         'message' => isset($smsResult['data']['messages'][0]['status'])
+        //             ? $smsResult['data']['messages'][0]['status']
+        //             : ($smsResult['error']['message'] ?? 'unknown'),
+        //     ],
+        //     'email' => [
+        //         'status' => $emailResult['status'] === 'sent',
+        //         'message' => $emailResult['status'] ?? 'error',
+        //         // 'message' => $emailResult, //for debug
+        //     ]
+        // ]);
+        return new NotificationResource($ticket);
     }
 
     public function sendSMS($id)
