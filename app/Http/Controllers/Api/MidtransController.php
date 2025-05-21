@@ -27,7 +27,7 @@ class MidtransController extends Controller
         $request->validate([
             'ticket_id' => 'required|exists:tickets,id',
             // 'amount' => 'required|numeric',
-            'type'      => 'required|in:sidang, denda',
+            'type'      => 'required',
         ]);
 
         $ticket   = Ticket::with(['violation.violationType'])->find($request->ticket_id);
