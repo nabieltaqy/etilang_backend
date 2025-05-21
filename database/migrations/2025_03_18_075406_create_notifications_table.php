@@ -16,7 +16,7 @@ return new class extends Migration
             $table->enum('type', ['email', 'sms', 'whatsapp']);
             $table->uuid('ticket_id');
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
-            $table->string('status');
+            $table->boolean('is_sent')->default(false);
             $table->timestamps();
         });
     }
