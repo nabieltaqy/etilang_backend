@@ -27,10 +27,8 @@ class MidtransController extends Controller
         $request->validate([
             'ticket_id' => 'required|exists:tickets,id',
             // 'amount' => 'required|numeric',
-            'type'      => 'required',
+            'type'      => 'required|in:sidang,denda',
         ]);
-
-        $type   = $request->type;
 
         $ticket   = Ticket::with(['violation.violationType'])->find($request->ticket_id);
         $max_fine = $ticket->violation->violationType->max_fine;
@@ -56,6 +54,7 @@ class MidtransController extends Controller
             'credit_card'         => [
                 'secure' => true, // Menggunakan 3D Secure
             ],
+            'type'                => $request->type,
         ];
 
 
@@ -65,7 +64,7 @@ class MidtransController extends Controller
         Activity::create([
             'ticket_id'   => $request->ticket_id,
             'name'        => 'Transaksi Dibuat',
-            'description' => 'Transaksi ' . $type . ' untuk tiket ID ' . $request->ticket_id . ' telah dibuat.',
+            'description' => 'Transaksi ' . $request->type . ' untuk tiket ID ' . $request->ticket_id . ' telah dibuat.',
         ]);
 
         // Cek jika ada error dalam response
