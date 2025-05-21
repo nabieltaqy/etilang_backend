@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NotificationResource;
+use App\Http\Resources\TicketResource;
 use Illuminate\Http\Request;
 use App\Services\FonnteService;
 use App\Services\SMS8Service;
@@ -74,7 +75,8 @@ class NotificationController extends Controller
         //         // 'message' => $emailResult, //for debug
         //     ]
         // ]);
-        return new NotificationResource($ticket);
+        // return new NotificationResource($ticket);
+        return new TicketResource($ticket);
     }
 
     public function sendSMS($id)
