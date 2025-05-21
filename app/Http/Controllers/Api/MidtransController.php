@@ -30,6 +30,8 @@ class MidtransController extends Controller
             'type'      => 'required',
         ]);
 
+        $type   = $request->type;
+
         $ticket   = Ticket::with(['violation.violationType'])->find($request->ticket_id);
         $max_fine = $ticket->violation->violationType->max_fine;
 
@@ -56,13 +58,14 @@ class MidtransController extends Controller
             ],
         ];
 
+
         // Kirim request untuk transaksi ke Midtrans
         $response = $this->midtransService->createTransaction($transactionDetails);
 
         Activity::create([
             'ticket_id'   => $request->ticket_id,
             'name'        => 'Transaksi Dibuat',
-            'description' => 'Transaksi' . $request->type . 'untuk tiket ID ' . $request->ticket_id . ' telah dibuat.',
+            'description' => 'Transaksi ' . $type . ' untuk tiket ID ' . $request->ticket_id . ' telah dibuat.',
         ]);
 
         // Cek jika ada error dalam response
