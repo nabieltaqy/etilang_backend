@@ -26,7 +26,7 @@ class SendViolationVerification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: 'no-reply@e-challan.co.id',
+            from: 'mail@etilang.web.id',
             subject: 'Check your violation',
         );
     }
