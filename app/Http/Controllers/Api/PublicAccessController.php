@@ -17,7 +17,7 @@ class PublicAccessController extends Controller
     // menampilkan tiket sesuai id dan nomor polisi
     public function showTicket($id, $number)
     {
-        $ticket = Ticket::with(['violation.vehicle', 'violation.camera', 'violation.violationType', 'hearingSchedule' ])
+        $ticket = Ticket::with(['violation.vehicle', 'violation.camera', 'violation.violationType', 'appeals' ])
             ->where('id', $id)
             ->whereHas('violation.vehicle', function ($query) use ($number) {
                 $query->where('number', $number);
