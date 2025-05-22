@@ -29,7 +29,7 @@ class TicketResource extends JsonResource
             'vehicle' => new VehicleResource(optional($this->violation->vehicle)),
             'payment' => new TransactionResource($this->whenLoaded('transaction')),
             // 'activities' => ActivityResource::collection($this->whenLoaded('activities')),
-            'activities' => $this->activities->orderByDesc('created_at'),
+            'activities' => $this->activities->orderBy('created_at', 'desc'),
             // 'notifications' => NotificationResource::collection($this->whenLoaded('notifications')),
             'notifications' => $this->notifications->groupBy('type'),
             'camera' => new CameraResource($this->whenLoaded('violation.camera')),
