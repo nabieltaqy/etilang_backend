@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NotificationResource;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Services\FonnteService;
 use App\Services\SMS8Service;
@@ -59,6 +60,12 @@ class NotificationController extends Controller
             'ticket_id' => $ticket->id,
             'is_sent' => $emailResult['status'] === 'sent',
         ])->touch();
+
+        Activity::create([
+            'ticket_id' => $ticket->id,
+            'name' => 'Himbauan',
+            'description' => 'Himbauan Dikirimkan ke ' . $owner_phone . ' dan ' . $owner_email,
+        ]);
 
         // return response()->json([
         //     'whatsapp' => [
