@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\HearingSchedule;
-use App\Http\Resources\TicketResource;
 use Carbon\Carbon;
 use App\Models\Activity;
 use App\Models\Appeal;
 use App\Http\Resources\AppealResource;
+use App\Http\Resources\PublicTicketResource;
 
 class PublicAccessController extends Controller
 {
@@ -28,7 +28,7 @@ class PublicAccessController extends Controller
             return response()->json(['message' => 'Ticket not found or plate number mismatch'], 404);
         }
 
-        return new TicketResource($ticket);
+        return new PublicTicketResource($ticket);
     }
 
     //Pengajuan banding
