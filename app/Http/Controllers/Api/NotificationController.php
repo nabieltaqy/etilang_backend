@@ -29,7 +29,7 @@ class NotificationController extends Controller
     public function sendAll($id)
     {
         //get phone number and email from ticket
-        $ticket = Ticket::with(['vehicle', 'violation', 'camera'])->findOrFail($id);
+        $ticket = Ticket::with(['vehicle', 'violation.violationType', 'violation.camera', 'investigator'])->findOrFail($id);
         $vehicleInfo = $ticket->vehicle;
         $owner_email = $vehicleInfo->owner_email;
         $owner_phone = $vehicleInfo->owner_phone;
