@@ -33,14 +33,8 @@ class NotificationController extends Controller
         $vehicleInfo = $ticket->vehicle;
         $owner_email = $vehicleInfo->owner_email;
         $owner_phone = $vehicleInfo->owner_phone;
-        // $violation_detail = [
-        //     'ticket_id' => $ticket->id,
-        //     'vehicle_id' => $ticket->vehicle_id,
-        //     'violation_id' => $ticket->violation_id,
-        //     'owner_name' => $vehicleInfo->owner_name,
-        //     'evidence' => $ticket->violation->violation_evidence,
-        // ];
-        $message = "You have a new ticket with id: $ticket->id.\nPlease check for more details in " . env("APP_URL") . "\n\n Korlantas Polri";
+        $message = "Hi, {{$ticket->violation->vehicle->owner_name}}. \n Your vehicle {{$ticket->violation->number}}, have new traffic violation ticket with ID: \n{{$$ticket->id}} \nPlease check for 
+                        more details in https://etilang.web.id/tickets?vno={{$ticket->violation->number}}&tno={{$ticket->id}}\n\nKorlantas Polri";
 
         $whatsappResult = $this->fonnte->sendWhatsapp($owner_phone, $message);
         $smsResult = $this->sms->sendSMS($owner_phone, $message);
