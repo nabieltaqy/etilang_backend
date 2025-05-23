@@ -98,7 +98,7 @@
         <p>Yth. Bapak/Ibu Pemilik Kendaraan,</p>
         <p>Kendaraan Anda telah terdeteksi melakukan pelanggaran lalu lintas. Berikut adalah rinciannya:</p>
 
-        <img src="https://placehold.co/500x300?text=Foto+Bukti" alt="Foto Bukti Pelanggaran" />
+        <img src="https://api.etilang.web.id/storage/{{$ticket->violation->violation_evidence}}"  alt="Foto Bukti Pelanggaran" />
 
         <div class="details">
           <table>
@@ -126,7 +126,7 @@
         </div>
 
         <div class="button-container">
-          <a href="https://www.etilang.web.id" target="_blank">Konfirmasi Pelanggaran</a>
+          <a href="https://etilang.web.id/tickets?vno={{$ticket->violation->number}}&tno={{$ticket->id}}" target="_blank">Konfirmasi Pelanggaran</a>
         </div>
 
         <p><strong>Catatan:</strong> Mohon tinjau pelanggaran ini untuk tindakan lebih lanjut dan pemrosesan dalam sistem.</p>
