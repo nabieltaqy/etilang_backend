@@ -33,7 +33,7 @@ class NotificationController extends Controller
         $vehicleInfo = $ticket->vehicle;
         $owner_email = $vehicleInfo->owner_email;
         $owner_phone = $vehicleInfo->owner_phone;
-        $message = "You have a new ticket with id: $ticket->id. Please check for more details in" . env("APP_URL") . "\n\n Korlantas Polri";
+        $message = "You have a new ticket with id: $ticket->id.\nPlease check for more details in " . env("APP_URL") . "\n\n Korlantas Polri";
 
         $whatsappResult = $this->fonnte->sendWhatsapp($owner_phone, $message);
         $smsResult = $this->sms->sendSMS($owner_phone, $message);
