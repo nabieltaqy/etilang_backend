@@ -32,7 +32,7 @@ class AppealController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|enum:Accepted,Rejected',
+            'status' => 'required|in:Accepted,Rejected',
             'note'       => 'required',
         ]);
 
