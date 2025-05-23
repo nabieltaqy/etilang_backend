@@ -112,7 +112,7 @@
             </tr>
             <tr>
               <th>Tanggal & Waktu</th>
-              <td>$ticket->violation->created_at</td>
+              <td>{{$ticket->violation->created_at}}</td>
             </tr>
             <tr>
               <th>Lokasi</th>
