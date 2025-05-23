@@ -16,7 +16,7 @@ class SendViolationVerification extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public $test,)
+    public function __construct(public $ticket)
     {
     }
 
