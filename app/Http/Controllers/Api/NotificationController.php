@@ -33,8 +33,8 @@ class NotificationController extends Controller
         $vehicleInfo = $ticket->vehicle;
         $owner_email = $vehicleInfo->owner_email;
         $owner_phone = $vehicleInfo->owner_phone;
-        $message = "Hi, {{$ticket->violation->vehicle->owner_name}}. \n Your vehicle {{$ticket->violation->number}}, have new traffic violation ticket with ID: \n{{$$ticket->id}} \nPlease check for 
-                        more details in https://etilang.web.id/tickets?vno={{$ticket->violation->number}}&tno={{$ticket->id}}\n\nKorlantas Polri";
+        $message = "Hi, " . $vehicleInfo->owner_name . ".\n\nYour vehicle " . $ticket->violation->number . ", have new traffic violation ticket with ID:\n" . $ticket->id .
+        "\n\nPlease check for more details in \nhttps://etilang.web.id/tickets?vno=" . $ticket->violation->number . "&tno=" . $ticket->id . "\n\nKorlantas Polri";
 
         $whatsappResult = $this->fonnte->sendWhatsapp($owner_phone, $message);
         $smsResult = $this->sms->sendSMS($owner_phone, $message);
@@ -68,26 +68,26 @@ class NotificationController extends Controller
             'description' => 'Himbauan Dikirimkan ke ' . $owner_phone . ' dan ' . $owner_email,
         ]);
 
-        // return response()->json([
-        //     'whatsapp' => [
-        //         'status' => $whatsappResult['status'] ?? false,
-        //         'message' => $whatsappResult['detail'] ?? 'error',
-        //     ],
-        //     'sms' => [
-        //         'status' => $smsResult['success'] ?? false,
-        //         'message' => isset($smsResult['data']['messages'][0]['status'])
-        //             ? $smsResult['data']['messages'][0]['status']
-        //             : ($smsResult['error']['message'] ?? 'unknown'),
-        //     ],
-        //     'email' => [
-        //         'status' => $emailResult['status'] === 'sent',
-        //         'message' => $emailResult['status'] ?? 'error',
-        //         // 'message' => $emailResult, //for debug
-        //     ]
-        // ]);
-        return NotificationResource::collection($ticket->notifications)->groupBy(function ($item) {
-    return $item->type;
-});
+        return response()->json([
+            'whatsapp' => [
+                'status' => $whatsappResult['status'] ?? false,
+                'message' => $whatsappResult['detail'] ?? 'error',
+            ],
+            'sms' => [
+                'status' => $smsResult['success'] ?? false,
+                'message' => isset($smsResult['data']['messages'][0]['status'])
+                    ? $smsResult['data']['messages'][0]['status']
+                    : ($smsResult['error']['message'] ?? 'unknown'),
+            ],
+            'email' => [
+                'status' => $emailResult['status'] === 'sent',
+                'message' => $emailResult['status'] ?? 'error',
+                // 'message' => $emailResult, //for debug
+            ]
+        ]);
+//         return NotificationResource::collection($ticket->notifications)->groupBy(function ($item) {
+//     return $item->type;
+// });
     }
 
     public function sendSMS($id)
