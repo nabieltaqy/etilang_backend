@@ -94,7 +94,7 @@ public function verifyViolation(Request $request, $id)
     // Cek apakah pelanggaran ditemukan
     $violation = Violation::find($id);
     if (!$violation) {
-        return response()->json(['message' => 'Violation not found'], 404);
+        return response()->json(['message' => 'Violation not found, check vehicle number!'], 404);
     }
 
     // Cek apakah kendaraan terdaftar
