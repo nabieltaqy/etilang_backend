@@ -94,13 +94,13 @@ public function verifyViolation(Request $request, $id)
     // Cek apakah pelanggaran ditemukan
     $violation = Violation::find($id);
     if (!$violation) {
-        return response()->json(['message' => 'Violation not found, check vehicle number!'], 404);
+        return response()->json(['message' => 'Violation not found'], 404);
     }
 
     // Cek apakah kendaraan terdaftar
     $vehicle = Vehicle::where('number', $violation->number)->first();
     if (!$vehicle) {
-        return response()->json(['message' => 'Vehicle not found'], 404);
+        return response()->json(['message' => 'Vehicle not found. Please check the vehicle number!'], 404);
     }
 
     // Jika semua validasi lolos, baru ubah status pelanggaran
