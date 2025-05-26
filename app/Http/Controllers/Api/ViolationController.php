@@ -98,11 +98,14 @@ class ViolationController extends Controller
         // get user login
         $user = auth()->user();
 
-        $vehicle_id = Vehicle::where('number', $violation->number)->first()->id;
+        $vehicle = Vehicle::where('number', $violation->number)->first();
 
-        if ($vehicle_id== null) {
+        if ($vehicle === null) {
             return response()->json(['message' => 'Vehicle not found'], 404);
         }
+
+        $vehicle_id = $vehicle->id;
+        
         $ticket = Ticket::create([
             'violation_id'          => $violation->id,
             'investigator_id'       => $user->id,
@@ -127,7 +130,6 @@ class ViolationController extends Controller
             'message' => 'Ticket created and token revoked',
             'ticket'  => new TicketResource($ticket),
         ], 201);
-
     }
 
     public function cancelViolation(Request  $request, $id)
