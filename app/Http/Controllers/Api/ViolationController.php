@@ -102,25 +102,25 @@ class ViolationController extends Controller
 
         if ($vehicle === null) {
             return response()->json(['message' => 'Vehicle not found'], 404);
-        }
+        } else {
+            $vehicle_id = $vehicle->id;
 
-        $vehicle_id = $vehicle->id;
-        
-        $ticket = Ticket::create([
-            'violation_id'          => $violation->id,
-            'investigator_id'       => $user->id,
-            'status'                => 'Tilang',
-            'vehicle_id'            => $vehicle_id,
-            'deadline_confirmation' => now()->addDays(3),
-        ]);
-
-        //create activity if ticket created
-        if ($ticket) {
-            Activity::create([
-                'ticket_id'   => $ticket->id,
-                'name'        => 'Tilang',
-                'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
+            $ticket = Ticket::create([
+                'violation_id'          => $violation->id,
+                'investigator_id'       => $user->id,
+                'status'                => 'Tilang',
+                'vehicle_id'            => $vehicle_id,
+                'deadline_confirmation' => now()->addDays(3),
             ]);
+
+            //create activity if ticket created
+            if ($ticket) {
+                Activity::create([
+                    'ticket_id'   => $ticket->id,
+                    'name'        => 'Tilang',
+                    'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
+                ]);
+            }
         };
 
         // revoke the token
