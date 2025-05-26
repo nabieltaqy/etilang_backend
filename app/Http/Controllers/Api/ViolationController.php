@@ -100,6 +100,10 @@ class ViolationController extends Controller
 
         $vehicle_id = Vehicle::where('number', $violation->number)->first()->id;
 
+        if (!$vehicle_id) {
+            return response()->json(['message' => 'Vehicle not found'], 404);
+        }
+
         $ticket = Ticket::create([
             'violation_id'          => $violation->id,
             'investigator_id'       => $user->id,
