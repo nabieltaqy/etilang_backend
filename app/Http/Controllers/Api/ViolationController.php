@@ -83,54 +83,58 @@ class ViolationController extends Controller
         ], 200);
     }
 
-    public function verifyViolation(Request $request, $id)
-    {
-        // id checking if violation id exist on tickets
-        $ticket = Ticket::where('violation_id', $id)->first();
-        if ($ticket) {
-            return response()->json(['message' => 'Violation already have ticket'], 400);
-        }
-
-        $violation         = Violation::find($id);
-        $violation->status = 'Tilang';
-        $violation->save();
-
-        // get user login
-        $user = auth()->user();
-
-        $vehicle = Vehicle::where('number', $violation->number)->first();
-
-        if ($vehicle === null) {
-            return response()->json(['message' => 'Vehicle not found'], 404);
-        } else {
-            $vehicle_id = $vehicle->id;
-
-            $ticket = Ticket::create([
-                'violation_id'          => $violation->id,
-                'investigator_id'       => $user->id,
-                'status'                => 'Tilang',
-                'vehicle_id'            => $vehicle_id,
-                'deadline_confirmation' => now()->addDays(3),
-            ]);
-
-            //create activity if ticket created
-            if ($ticket) {
-                Activity::create([
-                    'ticket_id'   => $ticket->id,
-                    'name'        => 'Tilang',
-                    'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
-                ]);
-            }
-        };
-
-        // revoke the token
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => 'Ticket created and token revoked',
-            'ticket'  => new TicketResource($ticket),
-        ], 201);
+public function verifyViolation(Request $request, $id)
+{
+    // Cek apakah tiket sudah dibuat untuk pelanggaran ini
+    $ticket = Ticket::where('violation_id', $id)->first();
+    if ($ticket) {
+        return response()->json(['message' => 'Violation already has a ticket'], 400);
     }
+
+    // Cek apakah pelanggaran ditemukan
+    $violation = Violation::find($id);
+    if (!$violation) {
+        return response()->json(['message' => 'Violation not found'], 404);
+    }
+
+    // Cek apakah kendaraan terdaftar
+    $vehicle = Vehicle::where('number', $violation->number)->first();
+    if (!$vehicle) {
+        return response()->json(['message' => 'Vehicle not found'], 404);
+    }
+
+    // Jika semua validasi lolos, baru ubah status pelanggaran
+    $violation->status = 'Tilang';
+    $violation->save();
+
+    // Buat tiket
+    $user = auth()->user();
+    $ticket = Ticket::create([
+        'violation_id'          => $violation->id,
+        'investigator_id'       => $user->id,
+        'status'                => 'Tilang',
+        'vehicle_id'            => $vehicle->id,
+        'deadline_confirmation' => now()->addDays(3),
+    ]);
+
+    // Buat aktivitas
+    if ($ticket) {
+        Activity::create([
+            'ticket_id'   => $ticket->id,
+            'name'        => 'Tilang',
+            'description' => 'Kendaraan terverifikasi melanggar lalu lintas',
+        ]);
+    }
+
+    // Revoke token
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json([
+        'message' => 'Ticket created and token revoked',
+        'ticket'  => new TicketResource($ticket),
+    ], 201);
+}
+
 
     public function cancelViolation(Request  $request, $id)
     {
