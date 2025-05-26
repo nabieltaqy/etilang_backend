@@ -34,7 +34,7 @@ class NotificationController extends Controller
         $owner_email = $vehicleInfo->owner_email;
         $owner_phone = $vehicleInfo->owner_phone;
         $message = "Hi, " . $vehicleInfo->owner_name . ".\n\nYour vehicle " . $ticket->violation->number . ", have new traffic violation ticket with ID:\n" . $ticket->id .
-        "\n\nPlease check for more details in \nhttps://etilang.web.id/tickets?vno=" . $ticket->violation->number . "&tno=" . $ticket->id . "\n\nKorlantas Polri";
+        "\n\nPlease check for more details in \netilang.web.id/tickets?vno=" . $ticket->violation->number . "&tno=" . $ticket->id . "\n\nKorlantas Polri";
 
         $whatsappResult = $this->fonnte->sendWhatsapp($owner_phone, $message);
         $smsResult = $this->sms->sendSMS($owner_phone, $message);
