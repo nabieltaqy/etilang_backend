@@ -80,6 +80,17 @@ class PublicAccessController extends Controller
             ], 200);
         }
 
+        // Cek apakah tiket sudah sudah memiliki transaksi
+        $transaction = $ticket->transaction;
+        if ($transaction->type== 'sidang'){
+            if($transaction->status == 'pending'){
+                return response()->json([
+                    'message' => 'This ticket is already in pending hearing transaction',
+                    'transaction' => $transaction,
+                ], 400);
+            }
+        }
+
         // Ambil hearing schedule terdekat dari hari ini + 7 hari
         $schedule = HearingSchedule::where('date', '>=', Carbon::now()->addDays(7))
             ->orderBy('date', 'asc')
@@ -98,6 +109,7 @@ class PublicAccessController extends Controller
 
         // Update ticket dengan hearing_schedule_id
         $ticket->hearing_schedule_id = $schedule->id;
+        $ticket->status = 'Persidangan';
         $ticket->save();
 
         return response()->json([
