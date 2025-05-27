@@ -65,7 +65,7 @@ Route::post('detected-violation', [ViolationController::class, 'store']); //send
 //all user can access
 Route::prefix('public')->group(function () {
 Route::post('appeal', [PublicAccessController::class, 'appealStore']); //pengajuan banding
-Route::get('attend-hearing/{id}', [PublicAccessController::class, 'attendHearing']); //violator chooses hearing schedule
+Route::post('attend-hearing', [PublicAccessController::class, 'attendHearing']); //violator chooses hearing schedule
 Route::get('tickets/{id}/{number}', [PublicAccessController::class, 'showTicket']); //show ticket
 Route::prefix('midtrans')->group(function () { // transaction
     Route::post('transaction', [MidtransController::class, 'createTransaction']);

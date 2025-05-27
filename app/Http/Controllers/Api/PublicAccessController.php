@@ -67,8 +67,13 @@ class PublicAccessController extends Controller
     }
 
     // Violator memilih sidang
-    public function attendHearing($id)
+    public function attendHearing(Request $request)
     {
+        $request->validate([
+            'ticket_id' => 'required|exists:tickets,id',
+        ]);
+        $id = $request->ticket_id;
+        
         // Ambil tiket
         $ticket = Ticket::with(['hearingSchedule'])->findOrFail($id);
 
