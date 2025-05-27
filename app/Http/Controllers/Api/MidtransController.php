@@ -55,6 +55,9 @@ class MidtransController extends Controller
                 'secure' => true, // Menggunakan 3D Secure
             ],
             'type'                => $request->type,
+         'callbacks' => [
+                'finish' => 'javascript:void(0)', // URL untuk callback setelah pembayaran
+            ],
         ];
 
 
