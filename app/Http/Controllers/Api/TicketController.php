@@ -34,15 +34,15 @@ class TicketController extends Controller
         return new TicketResource($ticket);
     }
 
-    public function update(Request $request, $id)
-    {
-        // Logic to update an existing ticket
-        $ticket = Ticket::find($id);
-        if (!$ticket) {
-            return response()->json(['message' => 'Ticket not found'], 404);
-        }
-        // Validate and update the ticket
-        $ticket->update($request->all());
-        return new TicketResource($ticket);
-    }
+    // public function update(Request $request, $id)
+    // {
+    //     // Logic to update an existing ticket
+    //     $ticket = Ticket::find($id);
+    //     if (!$ticket) {
+    //         return response()->json(['message' => 'Ticket not found'], 404);
+    //     }
+    //     // Validate and update the ticket
+    //     $ticket->update($request->all());
+    //     return new TicketResource($ticket);
+    // }
 }

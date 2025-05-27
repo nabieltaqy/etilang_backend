@@ -48,6 +48,9 @@ class AppealController extends Controller
                 'name'        => 'Banding Ditolak',
                 'description' => 'Pengajuan Banding Ditolak',
             ]);
+
+            $ticket->update(['status' => 'Himbauan']);
+
         } else {
             Activity::create([
                 'ticket_id'   => $id,
