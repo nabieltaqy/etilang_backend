@@ -13,7 +13,10 @@ class AppealController extends Controller
 {
     public function index()
     {
-        $appeals = Appeal::with('ticket')->paginate(10);
+        $appeals = Appeal::with('ticket')
+        ->groupBy('status')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
 
         return AppealResource::collection($appeals);
     }
