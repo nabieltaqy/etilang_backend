@@ -14,8 +14,8 @@ class AppealController extends Controller
     public function index()
     {
         $appeals = Appeal::with('ticket')
-        ->groupBy('status')
         ->orderBy('created_at', 'desc')
+        ->groupBy('status')
         ->paginate(10);
 
         return AppealResource::collection($appeals);
