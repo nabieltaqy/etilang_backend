@@ -22,7 +22,7 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'ensure2FA']);
     Route::get('2fa-registration', [GoogleAuthController::class, 'show2faRegistration'])->middleware('auth:sanctum'); //show qr code for 2fa registration
     Route::post('2fa-verify', [GoogleAuthController::class, 'verify2fa'])->middleware(['auth:sanctum', 'ensure2FAEnabled']); //verify 2fa code
-    Route::get('2fa-disable/{id}', [GoogleAuthController::class, 'disable2fa'])->middleware(['auth:sanctum', 'ensure2FA', 'admin']); //disable 2fa only admin
+    // Route::get('2fa-disable/{id}', [GoogleAuthController::class, 'disable2fa'])->middleware(['auth:sanctum', 'ensure2FA', 'admin']); //disable 2fa only admin
 });
 
 // Middleware with auth token
@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
     //only admin can access
     Route::middleware(['admin'])->group(function () {
         Route::apiResource('users', UserController::class);
+    Route::get('2fa-disable/{id}', [GoogleAuthController::class, 'disable2fa'])->middleware('admin'); //disable 2fa only admin
+
     });
     
     //only police can access
