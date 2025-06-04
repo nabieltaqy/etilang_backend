@@ -34,7 +34,6 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
     //only admin can access
     Route::middleware(['admin'])->group(function () {
         Route::apiResource('users', UserController::class);
-    Route::get('2fa-disable/{id}', [GoogleAuthController::class, 'disable2fa'])->middleware('admin'); //disable 2fa only admin
 
     });
     
