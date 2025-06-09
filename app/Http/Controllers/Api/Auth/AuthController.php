@@ -29,7 +29,7 @@ class AuthController extends Controller
         //delete all existing user token
         $user->tokens()->delete();
 
-         $token = $user->createToken('auth_token')->plainTextToken; // harusnya temp token
+         $token = $user->createToken('temp_token')->plainTextToken;
 
         if ($user->is_2fa_enabled==true) {
             $message = 'You Need to Verify 2FA';
