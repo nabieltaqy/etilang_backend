@@ -28,7 +28,7 @@ class ViolationResource extends JsonResource
             'violation_type_id' => $this->violation_type_id,
             'violation_type' => new ViolationTypeResource($this->whenLoaded('violationType')),
             'number' => $this->number,
-            // 'vehicle_data' => new VehicleResource($this->whenLoaded('vehicle')),
+            'cancel_description' => $this->cancel_description,
             'vehicle_data' => $this->vehicle
                 ? new VehicleResource($this->vehicle)
                 : ['message' => 'Data kendaraan tidak ditemukan'],

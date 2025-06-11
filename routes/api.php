@@ -41,7 +41,8 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
     Route::middleware(['police'])->group(function () {
         Route::apiResource('vehicles', VehicleController::class);
         Route::apiResource('appeals', AppealController::class)->except(['create']);
-        Route::apiResource('violations', ViolationController::class)->except(['store','show', 'updateNumber', 'verifyViolation', 'cancelViolation']);
+        Route::get('violations', [ViolationController::class, 'index']);
+        // Route::apiResource('violations', ViolationController::class)->except(['store','show', 'updateNumber', 'verifyViolation', 'cancelViolation']);
         Route::prefix('notifications')->group(function () {
             Route::get('send-email/{id}', [NotificationController::class, 'sendEmail']); //send email
             Route::get('send-whatsapp/{id}', [NotificationController::class, 'sendWhatsApp']); //send whatsapp
