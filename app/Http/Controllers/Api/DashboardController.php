@@ -103,8 +103,12 @@ class DashboardController extends Controller
             ->groupBy('violation.camera.location')
             ->map(fn($group) => $group->count())
             ->sortDesc()
-            ->keys()
-            ->first();
+            ->map(fn($count, $location) => [
+                'location' => $location,
+                'count' => $count,
+            ])
+            ->values()
+            ->first(); // Only the most frequent one
     }
 
     private function calculatePercentageChange($current, $previous)
