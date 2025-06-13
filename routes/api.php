@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\MidtransController;
 use App\Http\Controllers\Api\PublicAccessController;
-use Illuminate\Container\Attributes\Auth;
+use App\Http\Controllers\Api\DashboardController;
 
 // use Illuminate\Http\Request;
 
@@ -58,6 +58,8 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
         Route::put('verify-violation/{id}', [ViolationController::class, 'verifyViolation'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //verify violation
         Route::put('cancel-violation/{id}', [ViolationController::class, 'cancelViolation'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //cancel violation
         Route::post('violations/revoke-token/{id}', [ViolationController::class, 'revokeToken'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //revoke token
+    
+        Route::get('dashboard', [DashboardController::class, 'index']);
     });
 });
 
