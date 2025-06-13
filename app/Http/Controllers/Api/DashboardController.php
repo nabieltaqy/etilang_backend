@@ -18,9 +18,9 @@ class DashboardController extends Controller
             'last_12_months' => $this->getDashboardData(12),
         ];
 
-        return response()->json([
+        return response()->json(
             $data
-        ]);
+        );
     }
 
     private function getDashboardData($months)
