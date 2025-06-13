@@ -43,6 +43,7 @@ class DashboardController extends Controller
             ->where('created_at', '>=', $currentFrom)
             ->sum('amount');
         $highestViolationType = $this->getHighestViolationType($months);
+        $mostViolationLocation = $this->getMostViolationLocation($months);
 
         // Previous Data
         $prevViolations = Violation::whereBetween('created_at', [$previousFrom, $previousTo])->count();
@@ -53,7 +54,7 @@ class DashboardController extends Controller
             ->pluck('violation.number')
             ->unique()
             ->count();
-        $prevAmount = Transaction::where('status', 'settlements')
+        $prevAmount = Transaction::where('status', 'settlement')
             ->whereBetween('created_at', [$previousFrom, $previousTo])
             ->sum('amount');
 
@@ -75,6 +76,7 @@ class DashboardController extends Controller
                 'change' => $this->calculatePercentageChange($amount, $prevAmount),
             ],
             'highest_violation_type' => $highestViolationType,
+            'most_violation_location' => $mostViolationLocation,
         ];
     }
 
@@ -86,6 +88,27 @@ class DashboardController extends Controller
             ->groupBy('violation.violationType.name')
             ->map(fn($group) => $group->count())
             ->sortDesc();
+    }
+
+    private function getMostViolationLocation($months)
+    {
+        return Ticket::with('violation.camera')
+            ->where('created_at', '>=', now()->subMonths($months))
+            ->get()
+            ->filter(fn($ticket) =>
+                $ticket->violation &&
+                $ticket->violation->camera &&
+                $ticket->violation->camera->location
+            )
+            ->groupBy('violation.camera.location')
+            ->map(fn($group) => $group->count())
+            ->sortDesc()
+            ->map(fn($count, $location) => [
+                'location' => $location,
+                'count' => $count,
+            ])
+            ->values()
+            ->first(); // Only the most frequent one
     }
 
     private function calculatePercentageChange($current, $previous)
