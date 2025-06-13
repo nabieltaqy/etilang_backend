@@ -19,8 +19,7 @@ class DashboardController extends Controller
         ];
 
         return response()->json([
-            'message' => 'Dashboard data retrieved successfully',
-            'data' => $data,
+            $data
         ]);
     }
 
