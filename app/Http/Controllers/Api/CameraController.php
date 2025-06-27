@@ -61,8 +61,12 @@ class CameraController extends Controller
     public function destroy($id)
     {
         $camera = Camera::findOrFail($id);
-        $camera->delete();
 
-        return response()->json(['message' => 'Camera deleted successfully'], 204);
+        if($camera){
+            $camera->delete();
+        }else{
+            return response()->json(['message' => 'Camera not found'], 404);
+        }
+        return response()->json(['message' => 'Camera deleted successfully'], 200);
     }
 }
