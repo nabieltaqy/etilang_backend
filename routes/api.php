@@ -2,17 +2,18 @@
 
 use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AppealController;
+use App\Http\Controllers\Api\CameraController;
+use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\VehicleController;
+use App\Http\Controllers\Api\MidtransController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ViolationController;
 use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\Auth\GoogleAuthController;
-use App\Http\Controllers\Api\MidtransController;
 use App\Http\Controllers\Api\PublicAccessController;
-use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\Auth\GoogleAuthController;
 
 // use Illuminate\Http\Request;
 
@@ -60,6 +61,8 @@ Route::middleware(['auth:sanctum', 'ensure2FA'])->group(function () {
         Route::post('violations/revoke-token/{id}', [ViolationController::class, 'revokeToken'])->middleware(['check.ability:verify-violation', 'validate.violation.token']); //revoke token
     
         Route::get('dashboard', [DashboardController::class, 'index']);
+
+        Route::apiResource('cameras', CameraController::class); //camera management
     });
 });
 
