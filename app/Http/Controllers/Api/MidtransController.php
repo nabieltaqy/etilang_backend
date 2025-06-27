@@ -47,8 +47,8 @@ class MidtransController extends Controller
         $transactionDetails = [
             'transaction_details' => [
                 'order_id'     => $orderId,
-                // 'gross_amount' => $max_fine, 
-                'gross_amount' => 10, 
+                'gross_amount' => $max_fine, 
+                // 'gross_amount' => 10, 
             ],
             'ticket_id'           => $request->ticket_id,
             'credit_card'         => [
