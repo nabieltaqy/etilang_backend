@@ -26,8 +26,8 @@ class SendViolationVerification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: 'mail@etilang.web.id',
-            subject: 'Check your violation',
+            from: 'no-reply@etilang.web.id',
+            subject: 'Check your traffic violation here',
         );
     }
         // ->with(['violation' => $this->violation]);
