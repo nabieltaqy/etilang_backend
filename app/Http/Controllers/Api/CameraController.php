@@ -44,10 +44,10 @@ class CameraController extends Controller
         $camera = Camera::findOrFail($id);
 
         $request->validate([
-            'location' => 'sometimes|required|string|max:255',
-            'stream_key' => 'sometimes|required|string|max:255',
-            'server_url' => 'sometimes|required|url',
-            'status' => 'sometimes|required|in:active,inactive',
+            'location' => 'required|string|max:255',
+            'stream_key' => 'required|string|max:255',
+            'server_url' => 'required|url',
+            'status' => 'required|in:active,inactive',
         ]);
 
         $camera->update($request->all());
