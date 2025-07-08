@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('number');
             // $table->unsignedBigInteger('vehicle_id');
             // $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
-            $table->unsignedBigInteger('camera_id');
+            $table->unsignedBigInteger('camera_id')->nullable();
             $table->foreign('camera_id')->references('id')->on('cameras')->onDelete('cascade');
+            $table->string('location');
             $table->string('violation_evidence');
             $table->string('number_evidence');
             $table->unsignedBigInteger('violation_type_id')->default(1);

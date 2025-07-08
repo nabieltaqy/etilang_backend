@@ -32,38 +32,53 @@ class ViolationController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'number'     => 'required',
-            'stream_key' => 'required|exists:cameras,stream_key',
-            'violation_evidence'   => 'required|image|mimes:jpeg,png,jpg',
-            'number_evidence' => 'required|image|mimes:jpeg,png,jpg',
-        ]);
+{
+    $request->validate([
+        'number'     => 'required',
+        'stream_key' => 'nullable|exists:cameras,stream_key',
+        'location'   => 'nullable|string',
+        'violation_evidence'   => 'required|image|mimes:jpeg,png,jpg',
+        'number_evidence'      => 'required|image|mimes:jpeg,png,jpg',
+    ]);
 
-        if ($request->hasFile('violation_evidence') && $request->hasFile('number_evidence')) {
-            // Store the uploaded files
-            $violation_relative_path = $request->file('violation_evidence')->store('violance_evidences', 'public');
-            $number_relative_path = $request->file('number_evidence')->store('number_evidences', 'public');
+    if (!$request->filled('stream_key') && !$request->filled('location')) {
+        return response()->json(['message' => 'Either stream_key or location must be provided'], 422);
+    }
 
-            // $vehicle_id = Vehicle::where('number', $request->number)->first()->id;
-            $camera_id  = Camera::where('stream_key', $request->stream_key)->first()->id;
+    if ($request->hasFile('violation_evidence') && $request->hasFile('number_evidence')) {
+        // Simpan file
+        $violation_relative_path = $request->file('violation_evidence')->store('violance_evidences', 'public');
+        $number_relative_path = $request->file('number_evidence')->store('number_evidences', 'public');
 
-            $violation = Violation::create([
-                'number' => $request->number,
-                'camera_id'  => $camera_id,
-                'violation_evidence'   => $violation_relative_path,
-                'number_evidence' => $number_relative_path,
-            ]);
+        // Ambil lokasi
+        $location = null;
+        $camera_id = null;
 
-            // return new ViolationResource($violation);
-            return response()->json([
-                'message'   => 'Violation created',
-                'violation' => new ViolationResource($violation),
-            ], 201);
+        if ($request->filled('stream_key')) {
+            $camera = Camera::where('stream_key', $request->stream_key)->first();
+            $camera_id = $camera->id;
+            $location = $camera->location;
+        } elseif ($request->filled('location')) {
+            $location = $request->location;
         }
 
-        return response()->json(['message' => 'No evidence file uploaded'], 400);
+        // Simpan pelanggaran
+        $violation = Violation::create([
+            'number'             => $request->number,
+            'camera_id'          => $camera_id, // nullable jika pakai location manual
+            'location'           => $location,
+            'violation_evidence' => $violation_relative_path,
+            'number_evidence'    => $number_relative_path,
+        ]);
+
+        return response()->json([
+            'message'   => 'Violation created',
+            'violation' => new ViolationResource($violation),
+        ], 201);
     }
+
+    return response()->json(['message' => 'No evidence file uploaded'], 400);
+}
 
     public function updateNumber(Request $request, $id)
     {
