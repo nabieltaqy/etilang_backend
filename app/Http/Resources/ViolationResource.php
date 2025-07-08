@@ -23,6 +23,7 @@ class ViolationResource extends JsonResource
             'status' => $this->status,
             'camera_id' => $this->camera_id,
             'camera' => new CameraResource($this->whenLoaded('camera')),
+            'location' => $this->location,
             'violation_evidence' => $this->violation_evidence,
             'number_evidence' => $this->number_evidence,
             'violation_type_id' => $this->violation_type_id,
