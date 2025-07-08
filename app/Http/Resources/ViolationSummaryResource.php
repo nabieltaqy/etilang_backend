@@ -17,7 +17,7 @@ class ViolationSummaryResource extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number,
-            'location' => $this->camera?->location,
+            'location' => $this->location,
             'violation_type' => $this->violationType->name,
             'status' => $this->status,
             'evidence' => $this->number_evidence,
