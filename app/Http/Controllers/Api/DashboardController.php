@@ -76,6 +76,7 @@ class DashboardController extends Controller
             ],
             'highest_violation_type' => $highestViolationType,
             'most_violation_location' => $mostViolationLocation,
+             'violation_trend' => $this->getViolationTrend($months),
         ];
     }
 
@@ -116,4 +117,34 @@ private function getMostViolationLocation($months)
         }
         return round((($current - $previous) / $previous) * 100, 2);
     }
+
+    private function getViolationTrend($months)
+{
+    $startDate = now()->subMonths($months)->startOfMonth();
+    
+    return Ticket::with('violation.violationType')
+        ->where('created_at', '>=', $startDate)
+        ->get()
+        ->filter(fn($ticket) =>
+            $ticket->violation &&
+            $ticket->violation->violationType
+        )
+        ->groupBy(function ($ticket) {
+            return $ticket->created_at->format('F'); // e.g., "April", "May"
+        })
+        ->flatMap(function ($ticketsInMonth, $month) {
+            return $ticketsInMonth->groupBy('violation.violationType.name')
+                ->map(function ($group, $violationType) use ($month) {
+                    return [
+                        'month' => $month,
+                        'type' => $violationType,
+                        'count' => $group->count(),
+                    ];
+                });
+        })
+        ->reduce(function ($carry, $item) {
+            $carry[$item['type']][$item['month']] = $item['count'];
+            return $carry;
+        }, []);
+}
 }
