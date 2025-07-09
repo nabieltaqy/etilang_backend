@@ -77,6 +77,7 @@ class DashboardController extends Controller
             'highest_violation_type' => $highestViolationType,
             'most_violation_location' => $mostViolationLocation,
              'violation_trend' => $this->getViolationTrend($months),
+             'ticket_status_summary' => $this->getTicketStatusSummary($months),
         ];
     }
 
@@ -156,5 +157,13 @@ private function getMostViolationLocation($months)
     }
 
     return $trend;
+}
+
+private function getTicketStatusSummary($months)
+{
+    return Ticket::where('created_at', '>=', now()->subMonths($months))
+        ->select('status', \DB::raw('count(*) as count'))
+        ->groupBy('status')
+        ->pluck('count', 'status'); // hasil: ['Tilang' => 12, 'Terdeteksi' => 40, ...]
 }
 }
