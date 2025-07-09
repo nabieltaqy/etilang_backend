@@ -90,24 +90,20 @@ class DashboardController extends Controller
     }
 
     private function getMostViolationLocation($months)
-    {
-        return Ticket::with('violation.camera')
-            ->where('created_at', '>=', now()->subMonths($months))
-            ->get()
-            ->filter(fn($ticket) =>
-                $ticket->violation &&
-                $ticket->violation->location
-            )
-            ->groupBy('violation.location')
-            ->map(fn($group) => $group->count())
-            ->sortDesc()
-            ->map(fn($count, $location) => [
-                'location' => $location,
-                'count' => $count,
-            ])
-            ->values()
-            ->first(); // Only the most frequent one
-    }
+{
+    return Ticket::where('created_at', '>=', now()->subMonths($months))
+        ->whereNotNull('location') // pastikan hanya yang ada lokasinya
+        ->get()
+        ->groupBy('location')
+        ->map(fn($group) => $group->count())
+        ->sortDesc()
+        ->map(fn($count, $location) => [
+            'location' => $location,
+            'count' => $count,
+        ])
+        ->values()
+        ->first(); // Hanya ambil lokasi paling sering
+}
 
     private function calculatePercentageChange($current, $previous)
     {
