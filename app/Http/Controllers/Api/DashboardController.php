@@ -89,13 +89,14 @@ class DashboardController extends Controller
             ->sortDesc();
     }
 
- private function getMostViolationLocation($months)
+private function getMostViolationLocation($months)
 {
     return Ticket::with('violation')
         ->where('created_at', '>=', now()->subMonths($months))
         ->get()
         ->filter(fn($ticket) =>
-            $ticket->violation && $ticket->violation->location
+            $ticket->violation &&
+            $ticket->violation->location
         )
         ->groupBy(fn($ticket) => $ticket->violation->location)
         ->map(fn($group) => $group->count())
@@ -105,7 +106,7 @@ class DashboardController extends Controller
             'count' => $count,
         ])
         ->values()
-        ->first(); // Ambil lokasi paling sering
+        ->first(); // Lokasi paling sering muncul
 }
 
     private function calculatePercentageChange($current, $previous)
