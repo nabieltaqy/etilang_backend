@@ -120,31 +120,41 @@ private function getMostViolationLocation($months)
 
     private function getViolationTrend($months)
 {
-    $startDate = now()->subMonths($months)->startOfMonth();
-    
-    return Ticket::with('violation.violationType')
-        ->where('created_at', '>=', $startDate)
+    $start = now()->subMonths($months)->startOfMonth();
+    $end = now()->endOfMonth();
+
+    // Buat daftar bulan: ['May' => 0, 'June' => 0, 'July' => 0]
+    $monthsList = collect();
+    $current = $start->copy();
+    while ($current <= $end) {
+        $monthsList->put($current->format('F'), 0);
+        $current->addMonth();
+    }
+
+    // Ambil data ticket
+    $tickets = Ticket::with('violation.violationType')
+        ->where('created_at', '>=', $start)
         ->get()
         ->filter(fn($ticket) =>
             $ticket->violation &&
             $ticket->violation->violationType
-        )
-        ->groupBy(function ($ticket) {
-            return $ticket->created_at->format('F'); // e.g., "April", "May"
-        })
-        ->flatMap(function ($ticketsInMonth, $month) {
-            return $ticketsInMonth->groupBy('violation.violationType.name')
-                ->map(function ($group, $violationType) use ($month) {
-                    return [
-                        'month' => $month,
-                        'type' => $violationType,
-                        'count' => $group->count(),
-                    ];
-                });
-        })
-        ->reduce(function ($carry, $item) {
-            $carry[$item['type']][$item['month']] = $item['count'];
-            return $carry;
-        }, []);
+        );
+
+    // Buat struktur: [ViolationType => [Month => count]]
+    $trend = [];
+
+    foreach ($tickets as $ticket) {
+        $month = $ticket->created_at->format('F');
+        $type = $ticket->violation->violationType->name;
+
+        if (!isset($trend[$type])) {
+            // Inisialisasi semua bulan ke 0 dulu
+            $trend[$type] = $monthsList->toArray();
+        }
+
+        $trend[$type][$month]++;
+    }
+
+    return $trend;
 }
 }
