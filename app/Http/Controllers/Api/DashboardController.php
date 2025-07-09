@@ -96,8 +96,7 @@ class DashboardController extends Controller
             ->get()
             ->filter(fn($ticket) =>
                 $ticket->violation &&
-                $ticket->violation->camera &&
-                $ticket->violation->camera->location
+                $ticket->violation->location
             )
             ->groupBy('violation.location')
             ->map(fn($group) => $group->count())
