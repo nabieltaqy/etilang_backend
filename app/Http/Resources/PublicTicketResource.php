@@ -26,7 +26,7 @@ return [
             'vehicle' => new VehicleResource(optional($this->violation->vehicle)),
             'payment' => new TransactionResource($this->whenLoaded('transaction')),
             'activities' => ActivityResource::collection($this->whenLoaded('activities')),
-            'camera' => new CameraResource($this->whenLoaded('violation.camera')),
+            'location' => $this->violation->location,
             'appeal' => new AppealResource($this->whenLoaded('appeal')),
             'violation_type' => new ViolationTypeResource($this->whenLoaded('violation.violationType')),
             'transaction' => new TransactionResource($this->whenLoaded('transaction')),
