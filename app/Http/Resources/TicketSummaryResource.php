@@ -18,7 +18,7 @@ class TicketSummaryResource extends JsonResource
             'id' => $this->id,
             'number' => $this->violation?->number,
             'violation_type' => $this->violation?->violationType?->name,
-            'location' => $this->violation?->camera?->location,
+            'location' => $this->violation?->location,
             'investigator' => $this->investigator?->name,
             'status' => $this->status,
             'number_evidence' => $this->violation?->number_evidence,
